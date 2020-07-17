@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_tag"
+        android:enabled="true"
+        android:icon="@drawable/tag"
+        android:title="태그별"
+        />
+
+    <item
+        android:id="@+id/action_basic"
+        android:enabled="true"
+        android:icon="@drawable/basic"
+        android:title="기본보기" />
+
+    <item
+        android:id="@+id/action_review"
+        android:enabled="true"
+        android:icon="@drawable/review"
+        android:title="복습" />
+
+</menu>

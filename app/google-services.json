@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "754197982988",
+    "firebase_url": "https://chokipedia-9172d.firebaseio.com",
+    "project_id": "chokipedia-9172d",
+    "storage_bucket": "chokipedia-9172d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754197982988:android:5fa95bbe8af909f95e6329",
+        "android_client_info": {
+          "package_name": "com.example.chokipedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "754197982988-93k456h7ikkpfo13ag52nnojglp6m8db.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0fFczmvnXdgyJwoNKPmHIcsKaFfa6mms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754197982988-93k456h7ikkpfo13ag52nnojglp6m8db.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
