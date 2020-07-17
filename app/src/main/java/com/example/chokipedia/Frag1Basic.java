@@ -41,7 +41,6 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 public class Frag1Basic extends Fragment {
 
     private View view;
-    private Frag1Add frag1Add;
 
     private EditText editText;
     private TextView totalCnt;
@@ -271,7 +270,9 @@ public class Frag1Basic extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() { // 단어추가버튼을 누르면 단어추가하는 fragment로 교체
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).replaceFragment(frag1Add.newInstance());
+//                ((MainActivity)getActivity()).replaceFragment(frag1Add.newInstance());
+                Intent intent = new Intent(getActivity(), AddWordActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -24,6 +24,10 @@
         <activity
             android:name=".ShowWordActivity"
             android:theme="@style/AddTagPopUp"/>
+        <activity
+            android:name=".AddWordActivity"
+            android:theme="@style/AddTagPopUp"
+            android:windowSoftInputMode="adjustResize"/>
 
     </application>
 

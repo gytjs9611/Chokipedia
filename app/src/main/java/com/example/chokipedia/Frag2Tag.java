@@ -32,7 +32,6 @@ public class Frag2Tag extends Fragment {
 
     private View view;
     private Frag2TagData frag2TagData;
-    private Frag1Add frag1Add;
 
     private EditText editText;
     private TextView totalCnt;
