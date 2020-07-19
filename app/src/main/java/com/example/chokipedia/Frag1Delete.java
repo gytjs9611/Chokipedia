@@ -194,22 +194,9 @@ public class Frag1Delete extends Fragment {
                         if (checkedItems.get(i)) {
                             // 삭제코드
                             delete_data = adapter.getItem(i);
-                            listRef.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for(DataSnapshot data : dataSnapshot.getChildren()){
-                                        if(data.getKey().compareTo(delete_data)==0){
-                                            if(flag.compareTo("true")==0) // 한번더 체크해줘야 지웠던 데이터 추가할 때 자동으로 삭제되는 것 방지가능
-                                                data.getRef().removeValue();
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
+                            if(flag.compareTo("true")==0){ // 삭제 후 다시 추가하는 경우를 위해
+                                listRef.child(delete_data).removeValue();
+                            }
                         }
                     }
                     // 모든 선택 상태 초기화.
@@ -223,7 +210,7 @@ public class Frag1Delete extends Fragment {
                 else if(flag.compareTo("false")==0){
                     System.out.println("아무 변화 없음");
 //                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-                    ((MainActivity)getActivity()).setFrag(0);
+//                    ((MainActivity)getActivity()).setFrag(0);
                 }
                 else{
                     System.out.println("아무 변화 없음");
@@ -266,29 +253,5 @@ public class Frag1Delete extends Fragment {
     }
     // ctrl+O, 검색하면 됨
     // fragment는 onCreateView로 생성하면 됨
-
-    private  String target;
-
-//    public void deleteData(String key){
-//        target = key;
-//        listRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for(DataSnapshot data : dataSnapshot.getChildren()){
-//                    if(data.getKey().compareTo(target)==0){
-//                        if(delRef.child("delete"))
-//                        data.getRef().removeValue();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
-
 
 }

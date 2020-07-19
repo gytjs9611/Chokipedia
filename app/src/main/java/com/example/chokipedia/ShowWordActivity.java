@@ -3,6 +3,7 @@ package com.example.chokipedia;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -75,8 +77,6 @@ public class ShowWordActivity extends Activity {
             }
         });
 
-
-
     }
 
     public void showData(TextView textView, String append, String data){
@@ -87,6 +87,7 @@ public class ShowWordActivity extends Activity {
             textView.setText(append + data);
         }
     }
+
 
     public void onClickTag1(View v){
         BottomNavigationView bottomNavigationView;

@@ -239,24 +239,9 @@ public class Frag1Basic extends Fragment {
 //                click_data = Array.get(position).toString(); // 검색 후 아이템 클릭시, 검색전 아이템의 position 기준으로 데이터 설정됨
                 click_data = adapter.getItem(position).toString();
 
-                listRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        for(DataSnapshot messageData : dataSnapshot.getChildren()){
-                            if(click_data==messageData.getKey()){
-                                Intent intent = new Intent(getActivity(), ShowWordActivity.class);
-                                intent.putExtra("click_data", click_data);
-                                startActivity(intent);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                Intent intent = new Intent(getActivity(), ShowWordActivity.class);
+                intent.putExtra("click_data", click_data);
+                startActivity(intent);
 
 
             }
