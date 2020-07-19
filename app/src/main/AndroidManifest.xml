@@ -28,6 +28,10 @@
             android:name=".AddWordActivity"
             android:theme="@style/AddTagPopUp"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".MyAlertDialog"
+            android:theme="@style/AddTagPopUp">
+        </activity>
 
     </application>
 

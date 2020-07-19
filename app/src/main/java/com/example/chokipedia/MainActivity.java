@@ -20,9 +20,12 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fm;
     private FragmentTransaction ft;
+
     private Frag1Basic basic;
     private Frag2Tag tag;
     private Frag3Review review;
+
+    private Frag1Delete basic_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         basic = new Frag1Basic();
         tag = new Frag2Tag();
         review = new Frag3Review();
+
+        basic_delete = new Frag1Delete();
         // fragment 생성
 
 
@@ -72,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     // fragment 교체가 일어나는 실행문
-    private void setFrag(int n){
+    public void setFrag(int n){
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction(); // fragment 가져와서 transaction 수행
-        switch(n){ // 총 3가지의 fragment가 교체됨
+        switch(n){ // 총 4가지의 fragment가 교체됨
             case 0:
                 ft.replace(R.id.main_frame, basic);
                 ft.commit(); // 저장을 의미
@@ -86,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 2:
                 ft.replace(R.id.main_frame, review);
+                ft.commit();
+                break;
+            case 3:
+                ft.replace(R.id.main_frame, basic_delete);
                 ft.commit();
                 break;
         }

@@ -1,30 +1,22 @@
 package com.example.chokipedia;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -36,11 +28,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 public class Frag1Basic extends Fragment {
 
     private View view;
+
+    private Frag1Delete frag1Delete;
 
     private EditText editText;
     private TextView totalCnt;
@@ -51,17 +43,21 @@ public class Frag1Basic extends Fragment {
     private ChildEventListener mChild;
     // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
-    private DatabaseReference listRef, dbRef;
+    private DatabaseReference listRef, delRef;
+
 
     private ListView listView;
-    private ArrayAdapter<String> adapter; // array배열 생성, listview와 연결
-    List<Object> Array = new ArrayList<Object>();
+    private ArrayAdapter<String> adapter;
+    // array배열 생성, listview와 연결
+    List<String> Array = new ArrayList<String>();
 
     private String search_keyword;
 
-    private Button addButton;
+    private Button addButton, deleteButton;
 
     private String click_data;
+
+
 
 
     public static Frag1Basic newInstance(){
@@ -76,7 +72,6 @@ public class Frag1Basic extends Fragment {
 
         editText = view.findViewById(R.id.input); // 검색어입력란
 
-
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,7 +85,10 @@ public class Frag1Basic extends Fragment {
                 searchRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
                             adapter.clear();
+                            Array.clear(); // 얘를 추가해야 중복으로 아이템 추가 안됨
 
                             if(search_keyword.length()>0) { //검색어 입력된 경우
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -192,14 +190,20 @@ public class Frag1Basic extends Fragment {
 
         listView = view.findViewById(R.id.wordList);
 
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+        // 아이템 view를 선택가능하도록 만듦 : simple_list_item_multiple_choice
+
         listView.setAdapter(adapter);
+
+
 
         listRef = firebaseDatabase.getReference("dictionary").child("word_list");
         listRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 adapter.clear();
+                Array.clear();
 
                 for(DataSnapshot messageData : dataSnapshot.getChildren()){
                     String msg2 = messageData.getKey();
@@ -208,6 +212,7 @@ public class Frag1Basic extends Fragment {
                 }
                 adapter.notifyDataSetChanged();
                 listView.setSelection(adapter.getCount()-1);
+
 
                 int cnt;
                 String cntString;
@@ -259,12 +264,8 @@ public class Frag1Basic extends Fragment {
 
 
 
-
-
-
-
-
         addButton = view.findViewById(R.id.add_button);
+        deleteButton = view.findViewById(R.id.delete_button);
 
 
         addButton.setOnClickListener(new View.OnClickListener() { // 단어추가버튼을 누르면 단어추가하는 fragment로 교체
@@ -276,21 +277,22 @@ public class Frag1Basic extends Fragment {
             }
         });
 
+        delRef = firebaseDatabase.getReference("dictionary").child("state").child("delete");
 
-
-
-
-
-
-
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delRef.setValue("null");
+//                ((MainActivity)getActivity()).replaceFragment(frag1Delete.newInstance());
+                ((MainActivity)getActivity()).setFrag(3);
+            }
+        });
 
 
         return view;
     }
     // ctrl+O, 검색하면 됨
     // fragment는 onCreateView로 생성하면 됨
-
-
 
 
 
