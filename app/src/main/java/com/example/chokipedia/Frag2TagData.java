@@ -163,7 +163,7 @@ public class Frag2TagData extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 adapter.clear();
-                if(dataSnapshot.exists()){
+                if(dataSnapshot.exists()){ // 웬만하면 체크 꼭 해주기!!! - 후에 다른 함수에서 문제 발생 시 이 부분 추가해보기!
                     for(DataSnapshot messageData : dataSnapshot.getChildren()){
                         String msg2 = messageData.getKey();
                         String tag1 = messageData.child("tag1").getValue(String.class); // getValue().toString()대신
