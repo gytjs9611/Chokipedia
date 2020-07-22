@@ -50,6 +50,16 @@ public class AddWordActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_addword);
 
+        String tag_data = getIntent().getStringExtra("tag_data");
+        if(tag_data.compareTo("null")==0) {
+            tag_data ="";
+        }
+        else{
+            tag_data = tag_data.substring(2);
+        }
+
+
+
         addRef = firebaseDatabase.getReference("dictionary").child("word_list");
         tagRef = firebaseDatabase.getReference("dictionary").child("tag_list");
         // 얘를 여기서 선언해야 단어 추가버튼 누를 시 오류 안나는듯??
@@ -65,6 +75,8 @@ public class AddWordActivity extends Activity {
         tag1 = findViewById(R.id.input_tag1);
         tag2 = findViewById(R.id.input_tag2);
 
+        tag1.setText(tag_data);
+
 
         okButton.setOnClickListener(new View.OnClickListener() { // 단어 추가
 
@@ -78,6 +90,7 @@ public class AddWordActivity extends Activity {
                 s_ex2 = ex2.getText().toString();
                 s_tag1 = tag1.getText().toString();
                 s_tag2 = tag2.getText().toString();
+
 
                 if(s_word.length()>0){
                     addRef.child(s_word).child("meaning1").setValue(s_mean1);
@@ -98,6 +111,7 @@ public class AddWordActivity extends Activity {
                     completeMsg = Toast.makeText(getApplicationContext(), "성공적으로 추가되었습니다.", Toast.LENGTH_SHORT);
                     completeMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
                     completeMsg.show();
+                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 성공적으로 추가됨!!!!!!!");
                     finish();
 
                 }

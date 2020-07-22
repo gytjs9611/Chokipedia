@@ -258,6 +258,7 @@ public class Frag1Basic extends Fragment {
             public void onClick(View v) {
 //                ((MainActivity)getActivity()).replaceFragment(frag1Add.newInstance());
                 Intent intent = new Intent(getActivity(), AddWordActivity.class);
+                intent.putExtra("tag_data", "null");
                 startActivity(intent);
             }
         });

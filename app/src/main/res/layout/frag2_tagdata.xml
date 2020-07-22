@@ -112,12 +112,12 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/delete_button"
+            android:id="@+id/tagdata_delete_button"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:layout_toStartOf="@+id/add_button"
+            android:layout_toStartOf="@+id/tagdata_add_button"
             android:background="@drawable/cancel_button"
             android:text="삭제"
             android:textSize="16sp"
@@ -125,7 +125,7 @@
             android:textColor="#FFFFFF" />
 
         <Button
-            android:id="@+id/add_button"
+            android:id="@+id/tagdata_add_button"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

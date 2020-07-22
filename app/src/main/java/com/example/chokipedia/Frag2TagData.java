@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class Frag2TagData extends Fragment {
     private View view;
 
@@ -51,7 +54,9 @@ public class Frag2TagData extends Fragment {
 
     private String click_tag_data;
     private String click_word_data;
-    private Button addButton;
+
+    private Button addButton, deleteButton;
+
 
 
 
@@ -136,6 +141,15 @@ public class Frag2TagData extends Fragment {
         });
 
 
+        addButton = view.findViewById(R.id.tagdata_add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddWordActivity.class);
+                intent.putExtra("tag_data", click_tag_data);
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -149,34 +163,37 @@ public class Frag2TagData extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 adapter.clear();
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot messageData : dataSnapshot.getChildren()){
+                        String msg2 = messageData.getKey();
+                        String tag1 = messageData.child("tag1").getValue(String.class); // getValue().toString()대신
+                        String tag2 = messageData.child("tag2").getValue(String.class);
+                        System.out.println(msg2+","+tag1);
+                        if(click_tag_data.compareTo("# "+tag1)==0 || click_tag_data.compareTo("# "+tag2)==0){
+                            Array.add(msg2);
+                            adapter.add(msg2);
+                        }
 
-                for(DataSnapshot messageData : dataSnapshot.getChildren()){
-                    String msg2 = messageData.getKey();
-                    String tag1 = messageData.child("tag1").getValue().toString();
-                    String tag2 = messageData.child("tag2").getValue().toString();
-                    if(click_tag_data.compareTo("# "+tag1)==0 || click_tag_data.compareTo("# "+tag2)==0){
-                        System.out.println("ddfd");
-                        Array.add(msg2);
-                        adapter.add(msg2);
                     }
+                    adapter.notifyDataSetChanged();
+                    listView.setSelection(adapter.getCount()-1);
 
+                    int cnt;
+                    String cntString;
+                    cnt = listView.getCount();
+                    cntString = Integer.toString(cnt)+"개의 검색결과";
+
+                    totalCnt = view.findViewById(R.id.total_count);
+                    totalCnt.setText(cntString);
                 }
-                adapter.notifyDataSetChanged();
-                listView.setSelection(adapter.getCount()-1);
 
-                int cnt;
-                String cntString;
-                cnt = listView.getCount();
-                cntString = Integer.toString(cnt)+"개의 검색결과";
-
-                totalCnt = view.findViewById(R.id.total_count);
-                totalCnt.setText(cntString);
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
             }
         });
 
@@ -190,24 +207,31 @@ public class Frag2TagData extends Fragment {
 //                click_data = Array.get(position).toString(); // 검색 후 아이템 클릭시, 검색전 아이템의 position 기준으로 데이터 설정됨
                 click_word_data = adapter.getItem(position).toString();
 
-                listRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Intent intent = new Intent(getActivity(), ShowWordActivity.class);
+                intent.putExtra("click_data", click_word_data);
+                startActivity(intent);
 
-                        for(DataSnapshot messageData : dataSnapshot.getChildren()){
-                            if(click_word_data==messageData.getKey()){
-                                Intent intent = new Intent(getActivity(), ShowWordActivity.class);
-                                intent.putExtra("click_data", click_word_data);
-                                startActivity(intent);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+//                listRef.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        if(dataSnapshot.exists() && item_click_flag==1){
+//                            for(DataSnapshot messageData : dataSnapshot.getChildren()){
+//                                if(click_word_data==messageData.getKey()){
+//                                    Intent intent = new Intent(getActivity(), ShowWordActivity.class);
+//                                    intent.putExtra("click_data", click_word_data);
+//                                    startActivity(intent);
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
+//                    }
+//                });
+                // 불필요한 코드였음!!!!!!
 
 
             }
@@ -218,7 +242,13 @@ public class Frag2TagData extends Fragment {
 
 
 
+
         return view;
 
     }
+
+
+
+
+
 }
