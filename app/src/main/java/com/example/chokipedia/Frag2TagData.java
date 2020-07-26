@@ -44,7 +44,7 @@ public class Frag2TagData extends Fragment {
     private ChildEventListener mChild;
     // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
-    private DatabaseReference listRef, dbRef;
+    private DatabaseReference listRef, delRef;
 
     private ListView listView;
     private ArrayAdapter<String> adapter; // array배열 생성, listview와 연결
@@ -152,10 +152,23 @@ public class Frag2TagData extends Fragment {
         });
 
 
+        delRef = firebaseDatabase.getReference("dictionary").child("state").child("tagdata_delete");
+
+        deleteButton = view.findViewById(R.id.tagdata_delete_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Frag2TagDataDelete frag2TagDataDelete = new Frag2TagDataDelete();
+                delRef.setValue("null");
+                ((MainActivity)getActivity()).replaceFragment(frag2TagDataDelete.newInstance(click_tag_data));
+            }
+        });
+
+
 
         listView = view.findViewById(R.id.tagList);
 
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
         listView.setAdapter(adapter);
 
         listRef = firebaseDatabase.getReference("dictionary").child("word_list");
@@ -210,29 +223,6 @@ public class Frag2TagData extends Fragment {
                 Intent intent = new Intent(getActivity(), ShowWordActivity.class);
                 intent.putExtra("click_data", click_word_data);
                 startActivity(intent);
-
-//                listRef.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if(dataSnapshot.exists() && item_click_flag==1){
-//                            for(DataSnapshot messageData : dataSnapshot.getChildren()){
-//                                if(click_word_data==messageData.getKey()){
-//                                    Intent intent = new Intent(getActivity(), ShowWordActivity.class);
-//                                    intent.putExtra("click_data", click_word_data);
-//                                    startActivity(intent);
-//                                }
-//                            }
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
-//                    }
-//                });
-                // 불필요한 코드였음!!!!!!
-
 
             }
         });

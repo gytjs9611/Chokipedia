@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,11 +30,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Frag1Delete extends Fragment {
+public class Frag2TagDataDelete extends Fragment {
 
     private View view;
 
-    private Frag1Basic frag1Basic;
+    private Frag2TagData frag2TagData;
 
     private EditText editText;
     private TextView totalCnt;
@@ -62,18 +61,32 @@ public class Frag1Delete extends Fragment {
 
     private String click_data, flag;
 
+    private String click_tag_data;
+
     private Toast deleteMsg;
 
 
-    public static Frag1Delete newInstance(){
-        return new Frag1Delete();
+    public static Frag2TagDataDelete newInstance(String click_data){
+        Frag2TagDataDelete fragment = new Frag2TagDataDelete();
+        Bundle bundle = new Bundle(1);
+        bundle.putString("click_data", click_data);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frag1_delete, container, false);
+        view = inflater.inflate(R.layout.frag2_tagdata_delete, container, false);
         //setContentView와 유사
+
+        click_tag_data = getArguments().getString("click_data");
+        System.out.println(click_tag_data);
+
+        Button tagDataName = view.findViewById(R.id.tagdata_name);
+        tagDataName.setText(click_tag_data);
+
+
 
         listView = view.findViewById(R.id.wordList);
 
@@ -153,24 +166,29 @@ public class Frag1Delete extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 adapter.clear();
-                Array.clear();
+                if(dataSnapshot.exists()){ // 웬만하면 체크 꼭 해주기!!! - 후에 다른 함수에서 문제 발생 시 이 부분 추가해보기!
+                    for(DataSnapshot messageData : dataSnapshot.getChildren()){
+                        String msg2 = messageData.getKey();
+                        String tag1 = messageData.child("tag1").getValue(String.class); // getValue().toString()대신
+                        String tag2 = messageData.child("tag2").getValue(String.class);
+                        System.out.println(msg2+","+tag1);
+                        if(click_tag_data.compareTo("# "+tag1)==0 || click_tag_data.compareTo("# "+tag2)==0){
+                            Array.add(msg2);
+                            adapter.add(msg2);
+                        }
 
-                for(DataSnapshot messageData : dataSnapshot.getChildren()){
-                    String msg2 = messageData.getKey();
-                    Array.add(msg2);
-                    adapter.add(msg2);
+                    }
+                    adapter.notifyDataSetChanged();
+                    listView.setSelection(adapter.getCount()-1);
+
+                    int cnt;
+                    String cntString;
+                    cnt = listView.getCount();
+                    cntString = Integer.toString(cnt)+"개의 검색결과";
+
+                    totalCnt = view.findViewById(R.id.total_count);
+                    totalCnt.setText(cntString);
                 }
-                adapter.notifyDataSetChanged();
-                listView.setSelection(adapter.getCount()-1);
-
-
-                int cnt;
-                String cntString;
-                cnt = listView.getCount();
-                cntString = Integer.toString(cnt)+"개의 검색결과";
-
-                totalCnt = view.findViewById(R.id.total_count);
-                totalCnt.setText(cntString);
 
             }
 
@@ -180,7 +198,7 @@ public class Frag1Delete extends Fragment {
             }
         });
 
-        delRef = firebaseDatabase.getReference("dictionary").child("state").child("delete");
+        delRef = firebaseDatabase.getReference("dictionary").child("state").child("tagdata_delete");
 
 
         delRef.addValueEventListener(new ValueEventListener() {
@@ -206,13 +224,13 @@ public class Frag1Delete extends Fragment {
                     listView.clearChoices();
                     adapter.notifyDataSetChanged();
 
+//                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
+                    ((MainActivity)getActivity()).replaceFragment(frag2TagData.newInstance(click_tag_data));
+                    delRef.child("delete").setValue("null");
+
                     deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
                     deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
                     deleteMsg.show();
-
-//                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-                    ((MainActivity)getActivity()).setFrag(0);
-                    delRef.setValue("null");
                 }
                 else if(flag.compareTo("false")==0){
                     System.out.println("아무 변화 없음");
@@ -232,14 +250,14 @@ public class Frag1Delete extends Fragment {
         });
 
 
-        deleteButton = view.findViewById(R.id.basic_delete_button);
-        cancelButton = view.findViewById(R.id.basic_cancel_button);
+        deleteButton = view.findViewById(R.id.tagdata_delete_button);
+        cancelButton = view.findViewById(R.id.tagdata_cancel_button);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MyAlertDialog.class);
-                intent.putExtra("isTagData", "false");
+                intent.putExtra("isTagData", "true");
                 startActivity(intent);
             }
         });
@@ -250,7 +268,7 @@ public class Frag1Delete extends Fragment {
             @Override
             public void onClick(View v) {
                 listView.clearChoices();
-                ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
+                ((MainActivity)getActivity()).replaceFragment(frag2TagData.newInstance(click_tag_data));
             }
         });
 

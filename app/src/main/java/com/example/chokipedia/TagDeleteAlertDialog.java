@@ -19,12 +19,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MyAlertDialog extends Activity {
+public class TagDeleteAlertDialog extends Activity {
     TextView textView;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference delRef = firebaseDatabase.getReference("dictionary").child("state");
-    private String isTagData;
 
 
     @Override
@@ -32,28 +31,15 @@ public class MyAlertDialog extends Activity {
         super.onCreate(savedInstanceState);
         // title bar 없애기
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_alert_dialog);
-
-        Intent intent = getIntent();
-        isTagData = intent.getStringExtra("isTagData"); // basic delete인지, tagdata delete인지 구별
+        setContentView(R.layout.activity_tag_delete_alert_dialog);
     }
 
     public void onClickOk(View v){
-        if(isTagData.compareTo("true")==0){
-            delRef.child("tagdata_delete").setValue("true");
-        }
-        else{
-            delRef.child("delete").setValue("true");
-        }
+        delRef.child("tag_delete").setValue("true");
         finish();
     }
     public void onClickCancel(View v){
-        if(isTagData.compareTo("true")==0){
-            delRef.child("tagdata_delete").setValue("false");
-        }
-        else{
-            delRef.child("tagdata_delete").setValue("false");
-        }
+        delRef.child("tag_delete").setValue("false");
         finish();
     }
 

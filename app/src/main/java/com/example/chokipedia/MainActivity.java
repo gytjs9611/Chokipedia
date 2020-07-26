@@ -4,6 +4,7 @@ package com.example.chokipedia;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private Frag3Review review;
 
     private Frag1Delete basic_delete;
+    private Frag2TagDelete tag_delete;
+    private Frag2TagDataDelete tagdata_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         review = new Frag3Review();
 
         basic_delete = new Frag1Delete();
+        tag_delete = new Frag2TagDelete();
+        tagdata_delete = new Frag2TagDataDelete();
         // fragment 생성
 
 
@@ -97,8 +102,33 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.main_frame, basic_delete);
                 ft.commit();
                 break;
+            case 4:
+                ft.replace(R.id.main_frame, tag_delete);
+                ft.commit();
+                break;
+            case 5:
+                ft.replace(R.id.main_frame, tagdata_delete);
+                ft.commit();
+                break;
         }
     }
+
+
+    private long time= 0;
+
+    @Override
+    public void onBackPressed(){
+
+        if(System.currentTimeMillis()-time>=2000){
+            time=System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
+        }else if(System.currentTimeMillis()-time<2000){
+            moveTaskToBack(true); // task 백그라운드로 이동
+            finish(); // 종료, task 리스트에서 지우려면 finishAndRemoveTask();쓰기
+            android.os.Process.killProcess(android.os.Process.myPid()); // 앱 프로세스 종료
+        }
+    }
+
 
 
 }

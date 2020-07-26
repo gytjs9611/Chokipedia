@@ -41,7 +41,7 @@ public class Frag2Tag extends Fragment {
     private DatabaseReference searchRef = firebaseDatabase.getReference();
     // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
-    private DatabaseReference listRef, dbRef;
+    private DatabaseReference listRef, delRef;
 
     private ListView listView;
     private ArrayAdapter<String> adapter; // array배열 생성, listview와 연결
@@ -51,7 +51,7 @@ public class Frag2Tag extends Fragment {
 
     private String click_data;
 
-    private Button addButton;
+    private Button addButton, deleteButton;
 
     public static Frag2Tag newInstance(){
         return new Frag2Tag();
@@ -122,7 +122,7 @@ public class Frag2Tag extends Fragment {
 
         listView = view.findViewById(R.id.tagList);
 
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
         listView.setAdapter(adapter);
 
         listRef = firebaseDatabase.getReference("dictionary").child("tag_list");
@@ -177,8 +177,19 @@ public class Frag2Tag extends Fragment {
                 Intent intent = new Intent(getActivity(), AddTagActivity.class);
                 startActivity(intent);
 
+            }
+        });
 
 
+        delRef = firebaseDatabase.getReference("dictionary").child("state").child("tag_delete");
+        deleteButton = view.findViewById(R.id.delete_button);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delRef.setValue("null");
+//                ((MainActivity)getActivity()).replaceFragment(frag1Delete.newInstance());
+                ((MainActivity)getActivity()).setFrag(4);
             }
         });
 
