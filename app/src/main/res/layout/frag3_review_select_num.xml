@@ -49,30 +49,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
-    <EditText
-        android:id="@+id/et_quest_num"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:hint="최소 20 이상"
-        android:textSize="25dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_info"
-        app:layout_constraintStart_toStartOf="@+id/tv_info"
-        app:layout_constraintTop_toBottomOf="@+id/tv_info" />
 
-    <Button
-        android:id="@+id/bt_go"
-        android:layout_width="150dp"
-        android:layout_height="80dp"
-        android:background="@drawable/ok_button"
-        android:text="GO!"
-        android:textColor="#FFFFFF"
-        android:textSize="40dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_info"
-        app:layout_constraintStart_toStartOf="@+id/tv_info"
-        app:layout_constraintTop_toBottomOf="@+id/et_quest_num" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_info">
+
+        <EditText
+            android:id="@+id/et_quest_num"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:hint="최대 20 까지"
+            android:textSize="20dp"
+            android:inputType="numberDecimal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/bt_go"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/ok_button"
+            android:text="GO!"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/et_quest_num"
+            app:layout_constraintTop_toTopOf="@+id/et_quest_num" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
 
 
 

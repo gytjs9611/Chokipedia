@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private Frag2TagDelete tag_delete;
     private Frag2TagDataDelete tagdata_delete;
 
+    private Frag3ReviewSelectNum review_basic_select_num;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         basic_delete = new Frag1Delete();
         tag_delete = new Frag2TagDelete();
         tagdata_delete = new Frag2TagDataDelete();
+
+        review_basic_select_num = new Frag3ReviewSelectNum();
+
         // fragment 생성
 
 
@@ -110,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.main_frame, tagdata_delete);
                 ft.commit();
                 break;
+            case 6:
+                ft.replace(R.id.main_frame, review_basic_select_num);
+                ft.commit();
+                break;
+
         }
     }
 

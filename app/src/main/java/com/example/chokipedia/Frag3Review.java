@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 public class Frag3Review extends Fragment {
 
     private View view;
+    private Frag3ReviewSelectNum frag3ReviewSelectNum;
 
     public static Frag3Review newInstance(){
         return new Frag3Review();
@@ -21,6 +23,26 @@ public class Frag3Review extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag3_review, container, false);
+
+        Button basicButton = view.findViewById(R.id.basic_review_button);
+        Button tagButton = view.findViewById(R.id.tag_review_button);
+
+        basicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).replaceFragment(frag3ReviewSelectNum.newInstance("일반"));
+            }
+        });
+
+        tagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                ((MainActivity)getActivity()).replaceFragment(frag3ReviewSelectNum.newInstance("태그별"));
+                // 태그 목록 선택하는 fragment로 넘어가게
+            }
+        });
+
+
 
         return view;
     }

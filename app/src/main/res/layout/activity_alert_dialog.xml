@@ -73,7 +73,7 @@
             android:onClick="onClickOk"
             android:padding="16dp"
             android:text="확인"
-            android:textColor="#1C61FF"
+            android:textColor="#497FFB"
             android:textSize="18sp"
             android:textStyle="bold" />
 

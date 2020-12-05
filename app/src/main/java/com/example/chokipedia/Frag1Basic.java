@@ -130,64 +130,6 @@ public class Frag1Basic extends Fragment {
             }
         });
 
-
-
-//        searchBt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                msg = editText.getText().toString();
-//                System.out.println(msg);
-//
-//                searchRef = firebaseDatabase.getReference("dictionary").child("word_list");
-//                searchRef.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        adapter.clear();
-//                        if(!TextUtils.isEmpty(msg)){ //
-//                            for(DataSnapshot data : dataSnapshot.getChildren()){
-//                                String dataItem = data.getKey();
-//                                if(dataItem.compareTo(msg)==0){
-//                                    Array.add(dataItem);
-//                                    adapter.add(dataItem);
-//                                }
-//                            }
-//                        }
-//                        else{
-//                            for(DataSnapshot data : dataSnapshot.getChildren()){
-//                                String dataItem = data.getKey();
-//                                Array.add(dataItem);
-//                                adapter.add(dataItem);
-//                            }
-//                        }
-//
-//
-//                        int cnt;
-//                        String cntString;
-//                        cnt = listView.getCount();
-//                        cntString = "총 "+Integer.toString(cnt)+"개의 검색결과";
-//
-//                        totalCnt = view.findViewById(R.id.total_count);
-//                        totalCnt.setText(cntString);
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//
-//                InputMethodManager imm = (InputMethodManager)getContext().getSystemService(INPUT_METHOD_SERVICE);
-//                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0); // 검색버튼 누르면 키보드 숨김
-//
-//
-//
-//
-//
-//            }
-//        });
-
         listView = view.findViewById(R.id.wordList);
 
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
