@@ -186,9 +186,9 @@
 
     <Button
         android:id="@+id/bt_result"
-        android:layout_width="240dp"
+        android:layout_width="250dp"
         android:layout_height="30dp"
-        android:background="@drawable/cancel_button"
+        android:background="@drawable/quit_during_review_button"
         android:text="지금 복습 종료하고 결과보기"
         android:textColor="#ffffff"
         android:textSize="13dp"

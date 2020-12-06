@@ -4,20 +4,20 @@
     <item
         android:id="@+id/action_tag"
         android:enabled="true"
-        android:icon="@drawable/tag"
-        android:title="태그별"
+        android:icon="@drawable/ic_tag"
+        android:title=""
         />
 
     <item
         android:id="@+id/action_basic"
         android:enabled="true"
-        android:icon="@drawable/basic"
-        android:title="기본보기" />
+        android:icon="@drawable/ic_basic"
+        android:title="" />
 
     <item
         android:id="@+id/action_review"
         android:enabled="true"
-        android:icon="@drawable/review"
-        android:title="복습" />
+        android:icon="@drawable/ic_review"
+        android:title="" />
 
 </menu>
