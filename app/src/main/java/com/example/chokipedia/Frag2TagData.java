@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -84,6 +85,14 @@ public class Frag2TagData extends Fragment {
         tagDataName.setText(click_tag_data);
         editText = view.findViewById(R.id.input); // 검색어입력란
 
+        ImageView backButton = view.findViewById(R.id.bt_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).replaceFragment(new Frag2Tag().newInstance());
+            }
+        });
+
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -103,7 +112,11 @@ public class Frag2TagData extends Fragment {
                         if(search_keyword.length()>0) { //검색어 입력된 경우
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 String dataItem = data.getKey();
-                                if (dataItem.compareTo(search_keyword) == 0) {
+                                String itemForCheck = dataItem.toLowerCase();
+                                itemForCheck = itemForCheck.replaceAll(" ","");
+                                search_keyword = search_keyword.replaceAll(" ", "");
+
+                                if (itemForCheck.contains(search_keyword.toLowerCase())) {
                                     Array.add(dataItem);
                                     adapter.add(dataItem);
                                 }

@@ -1,16 +1,18 @@
 package com.example.chokipedia;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,12 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class Frag3ReviewQuest extends Fragment {
 
@@ -39,9 +37,12 @@ public class Frag3ReviewQuest extends Fragment {
     private View view;
 
     private String type;
-    private int totalNum;
+    private long totalNum;
     private int current = 0;
     private int state = OK;
+
+    private TextView typeTitle;
+    private TextView tagTitle;
 
     private TextView indexTextView;
     private TextView questionTextView;
@@ -49,15 +50,19 @@ public class Frag3ReviewQuest extends Fragment {
 
     private EditText answerEditText;
 
+    private CardView answerCard;
+    private Button resultButton;
+    private Button okButton;
+    private ImageView backButton;
+
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference basicRef, tagRef;
+    private DatabaseReference reference;
 
 
-    public static Frag3ReviewQuest newInstance(String type, int num){
+    public static Frag3ReviewQuest newInstance(String type){
         Frag3ReviewQuest fragment = new Frag3ReviewQuest();
         Bundle bundle = new Bundle();
         bundle.putString("type", type);
-        bundle.putInt("num", num);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,13 +73,44 @@ public class Frag3ReviewQuest extends Fragment {
         view = inflater.inflate(R.layout.frag3_review_quest, container, false);
 
         type = getArguments().getString("type");
-        totalNum = getArguments().getInt("num");
+        typeTitle = view.findViewById(R.id.type);
+        tagTitle = view.findViewById(R.id.tag_name);
+
+        if(type.equals("일반")){  // 일반 복습
+            typeTitle.setVisibility(View.VISIBLE);
+            tagTitle.setVisibility(View.INVISIBLE);
+        }
+        else{   // 태그별 복습
+            typeTitle.setVisibility(View.INVISIBLE);
+            tagTitle.setVisibility(View.VISIBLE);
+            tagTitle.setText("# "+type);
+        }
+
+        reference = firebaseDatabase.getReference("dictionary").child("word_list");
+        /*reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                totalNum = dataSnapshot.getChildrenCount(); // 총 단어의 개수 저장
+                indexTextView.setText((current+1) + " / " + totalNum);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
+
+        answerCard = view.findViewById(R.id.cv_answer);
+        resultButton = view.findViewById(R.id.bt_result);
+        okButton = view.findViewById(R.id.bt_ok);
+        backButton = view.findViewById(R.id.bt_back);
+
 
         TextView typeTextView = view.findViewById(R.id.type);
         indexTextView = view.findViewById(R.id.tv_index);
 
         typeTextView.setText(type);
-        indexTextView.setText((current+1) + " / " + totalNum);
 
         questionTextView = view.findViewById(R.id.tv_question);
         answerTextView = view.findViewById(R.id.tv_answer);
@@ -93,24 +129,14 @@ public class Frag3ReviewQuest extends Fragment {
         questionTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
 
 
-//        Set<Integer> indexSet = new HashSet<>();    // HashSet 는 중복값 저장하지 않음
-//        while(indexSet.size()<totalNum){
-//            double index = Math.random() * totalNum;    // 0 ~ totalNum-1
-//            indexSet.add((int) index);
-//        }
-//        final ArrayList<Integer> indexList = new ArrayList<>(indexSet);
-//        Collections.sort(indexList);
-
-
         final ArrayList<QuestionSet> questionSets = new ArrayList<QuestionSet>();
 
 
-        basicRef = firebaseDatabase.getReference("dictionary").child("word_list");
-        basicRef.addValueEventListener(new ValueEventListener() {
+        reference = firebaseDatabase.getReference("dictionary").child("word_list");
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(type.equals("일반")){
-                    int index = 0;
+                if(type.equals("일반")){  // 일반 복습
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         String question = ds.child("meaning1").getValue().toString();
                         String answer = ds.getKey();
@@ -119,13 +145,49 @@ public class Frag3ReviewQuest extends Fragment {
                         data.setQuestion(question);
                         data.setAnswer(answer);
                         questionSets.add(data);
+                        totalNum++;
                     }
-                    Collections.shuffle(questionSets);
 
                 }
+                else{   // 태그별 복습
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        String tag1, tag2;
+                        tag1 = ds.child("tag1").getValue().toString();
+                        tag2 = ds.child("tag2").getValue().toString();
 
-                questionTextView.setText(questionSets.get(current).getQuestion());
-                answerTextView.setText(questionSets.get(current).getAnswer());
+                        if(type.equals(tag1) || type.equals(tag2)){
+
+                            String question = ds.child("meaning1").getValue().toString();
+                            String answer = ds.getKey();
+
+                            QuestionSet data = new QuestionSet();
+                            data.setQuestion(question);
+                            data.setAnswer(answer);
+                            questionSets.add(data);
+                            totalNum++;
+                        }
+                    }
+                }
+                Collections.shuffle(questionSets);  // 랜덤 순서
+                if(totalNum>0){
+                    indexTextView.setText((current+1) + " / " + totalNum);
+                    questionTextView.setText(questionSets.get(current).getQuestion());
+                    answerTextView.setText(questionSets.get(current).getAnswer());
+                }
+                else{   // 데이터 없는 경우
+                    TextView qMark = view.findViewById(R.id.tv_q_mark);
+                    TextView noDataTextView = view.findViewById(R.id.tv_no_data);
+
+                    qMark.setVisibility(View.INVISIBLE);
+                    noDataTextView.setVisibility(View.VISIBLE);
+                    questionTextView.setVisibility(View.INVISIBLE);
+
+                    indexTextView.setVisibility(View.INVISIBLE);
+                    backButton.setVisibility(View.VISIBLE);
+                    answerEditText.setVisibility(View.INVISIBLE);
+                    okButton.setVisibility(View.INVISIBLE);
+                }
+
             }
 
             @Override
@@ -134,15 +196,24 @@ public class Frag3ReviewQuest extends Fragment {
             }
         });
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(type.equals("일반")){
+                    ((MainActivity)getActivity()).replaceFragment(new Frag3Review().newInstance());
+                }
+                else{
+                    ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewSelectTag().newInstance());
+                }
+            }
+        });
 
 
 
-        final CardView answerCard = view.findViewById(R.id.cv_answer);
         answerCard.setVisibility(View.INVISIBLE);
+        resultButton.setVisibility(View.INVISIBLE);
 
 
-
-        final Button okButton = view.findViewById(R.id.bt_ok);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,9 +223,11 @@ public class Frag3ReviewQuest extends Fragment {
                 if(state==OK){ // 확인버튼인 상태
                     // 정답 표시
                     answerCard.setVisibility(View.VISIBLE);
+                    resultButton.setVisibility(View.VISIBLE);
                     answerEditText.setEnabled(false);
 
                     if(current==totalNum-1){
+                        resultButton.setVisibility(View.INVISIBLE);
                         okButton.setBackgroundResource(R.drawable.close_button);
                         okButton.setText("결과보기");
                         okButton.setTextSize(18);
@@ -190,6 +263,7 @@ public class Frag3ReviewQuest extends Fragment {
                 else if(state==NEXT){
                     // 정답 표시 x
                     answerCard.setVisibility(View.INVISIBLE);
+                    resultButton.setVisibility(View.INVISIBLE);
                     answerEditText.setEnabled(true);
                     answerEditText.setText("");
 
@@ -206,16 +280,19 @@ public class Frag3ReviewQuest extends Fragment {
                     questionTextView.setText(questionSets.get(current).getQuestion());
                     answerTextView.setText(questionSets.get(current).getAnswer());
 
-
-
-
                 }
                 else if(state==RESULT){
                     // 결과보기
 
-
-
                 }
+
+            }
+        });
+
+        resultButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 결과보기
 
             }
         });

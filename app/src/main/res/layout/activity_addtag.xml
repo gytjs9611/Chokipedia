@@ -33,6 +33,7 @@
             android:textColor="#000"
             android:background="#FFFFFF"
             android:gravity="center"
+            android:maxLength="9"
             android:layout_marginBottom="3dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

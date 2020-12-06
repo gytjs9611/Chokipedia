@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,6 +82,15 @@ public class Frag1Delete extends Fragment {
         // 아이템 view를 선택가능하도록 만듦 : simple_list_item_multiple_choice
 
         listView.setAdapter(adapter);
+
+        ImageView backButton = view.findViewById(R.id.bt_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listView.clearChoices();
+                ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
+            }
+        });
 
 
         editText = view.findViewById(R.id.input); // 검색어입력란

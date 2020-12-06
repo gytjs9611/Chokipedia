@@ -13,7 +13,8 @@ import androidx.fragment.app.Fragment;
 public class Frag3Review extends Fragment {
 
     private View view;
-    private Frag3ReviewSelectNum frag3ReviewSelectNum;
+    private Frag3ReviewQuest frag3ReviewQuest;
+    private Frag3ReviewSelectTag frag3ReviewSelectTag;
 
     public static Frag3Review newInstance(){
         return new Frag3Review();
@@ -30,15 +31,15 @@ public class Frag3Review extends Fragment {
         basicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).replaceFragment(frag3ReviewSelectNum.newInstance("일반"));
+                ((MainActivity)getActivity()).replaceFragment(frag3ReviewQuest.newInstance("일반"));
+
             }
         });
 
         tagButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ((MainActivity)getActivity()).replaceFragment(frag3ReviewSelectNum.newInstance("태그별"));
-                // 태그 목록 선택하는 fragment로 넘어가게
+                ((MainActivity)getActivity()).replaceFragment(frag3ReviewSelectTag.newInstance());
             }
         });
 

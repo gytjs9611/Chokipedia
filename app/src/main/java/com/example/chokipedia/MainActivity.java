@@ -4,6 +4,7 @@ package com.example.chokipedia;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private Frag2TagDelete tag_delete;
     private Frag2TagDataDelete tagdata_delete;
 
-    private Frag3ReviewSelectNum review_basic_select_num;
+//    private Frag3ReviewSelectNum review_basic_select_num;
 
 
     @Override
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         tag_delete = new Frag2TagDelete();
         tagdata_delete = new Frag2TagDataDelete();
 
-        review_basic_select_num = new Frag3ReviewSelectNum();
 
         // fragment 생성
 
@@ -116,11 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.main_frame, tagdata_delete);
                 ft.commit();
                 break;
-            case 6:
-                ft.replace(R.id.main_frame, review_basic_select_num);
-                ft.commit();
-                break;
-
         }
     }
 

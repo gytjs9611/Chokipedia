@@ -81,8 +81,11 @@ public class Frag2Tag extends Fragment {
                         if(search_keyword.length()>0) { //검색어 입력된 경우
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 String dataItem = data.getKey();
-                                if (dataItem.compareTo(search_keyword) == 0) {
-                                    dataItem = "# " + dataItem;
+                                String itemForCheck = dataItem.toLowerCase();
+                                itemForCheck = itemForCheck.replaceAll(" ","");
+                                search_keyword = search_keyword.replaceAll(" ", "");
+
+                                if (itemForCheck.contains(search_keyword.toLowerCase())) {
                                     Array.add(dataItem);
                                     adapter.add(dataItem);
                                 }

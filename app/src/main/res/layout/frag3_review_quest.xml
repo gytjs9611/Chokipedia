@@ -5,12 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <TextView
         android:id="@+id/title"
         android:layout_width="140dp"
         android:layout_height="60dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="67dp"
+        android:layout_marginTop="75dp"
 
         android:autoSizeTextType="uniform"
         android:gravity="bottom"
@@ -33,6 +34,19 @@
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintStart_toEndOf="@+id/title" />
 
+    <TextView
+        android:id="@+id/tag_name"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="@drawable/tag_button2"
+        android:gravity="center"
+        android:minWidth="10dp"
+        android:padding="10dp"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintStart_toStartOf="@+id/type" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_question"
@@ -40,7 +54,7 @@
         android:layout_height="wrap_content"
         app:cardBackgroundColor="#F4F4F4"
         app:cardCornerRadius="20dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title">
@@ -50,7 +64,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tv_q_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -69,17 +83,17 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="15dp"
                 android:scrollbars="vertical"
-                android:text="명확하게 결말을 내지 않고 일시적으로 감추거나 흐지부지 덮어버리다."
+                android:text="문제가 어쩌고 저쩌고 저쩌구 어쩌구 블라블라."
                 android:textColor="#2f2f2f"
                 android:textSize="20dp"
-                app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toTopOf="@+id/textView" />
+                app:layout_constraintStart_toEndOf="@+id/tv_q_mark"
+                app:layout_constraintTop_toTopOf="@+id/tv_q_mark" />
 
             <TextView
                 android:id="@+id/tv_index"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 / 10"
+                android:text="0 / 0"
                 android:textColor="#1f1f1f"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -89,6 +103,20 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="데이터가 존재하지 않습니다."
+                android:textColor="#2f2f2f"
+                android:textSize="20sp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -156,7 +184,29 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Button
+        android:id="@+id/bt_result"
+        android:layout_width="240dp"
+        android:layout_height="30dp"
+        android:background="@drawable/cancel_button"
+        android:text="지금 복습 종료하고 결과보기"
+        android:textColor="#ffffff"
+        android:textSize="13dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cv_answer" />
 
+    <ImageView
+        android:id="@+id/bt_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_close"
+        android:gravity="center"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

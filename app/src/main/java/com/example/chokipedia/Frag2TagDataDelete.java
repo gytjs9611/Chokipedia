@@ -1,6 +1,7 @@
 package com.example.chokipedia;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +87,15 @@ public class Frag2TagDataDelete extends Fragment {
 
         Button tagDataName = view.findViewById(R.id.tagdata_name);
         tagDataName.setText(click_tag_data);
+
+        ImageView backButton = view.findViewById(R.id.bt_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listView.clearChoices();
+                ((MainActivity)getActivity()).replaceFragment(frag2TagData.newInstance(click_tag_data));
+            }
+        });
 
 
 
