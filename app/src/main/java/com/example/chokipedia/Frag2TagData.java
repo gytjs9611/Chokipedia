@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.ChildEventListener;
@@ -85,7 +86,7 @@ public class Frag2TagData extends Fragment {
         tagDataName.setText(click_tag_data);
         editText = view.findViewById(R.id.input); // 검색어입력란
 
-        ImageView backButton = view.findViewById(R.id.bt_back);
+        ConstraintLayout backButton = view.findViewById(R.id.bt_back);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

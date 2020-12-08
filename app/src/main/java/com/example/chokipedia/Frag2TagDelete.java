@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.ChildEventListener;
@@ -86,7 +87,7 @@ public class Frag2TagDelete extends Fragment {
 
         listView.setAdapter(adapter);
 
-        ImageView backButton = view.findViewById(R.id.bt_back);
+        ConstraintLayout backButton = view.findViewById(R.id.bt_back);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +54,7 @@ public class Frag3ReviewQuest extends Fragment {
     private CardView answerCard;
     private Button resultButton;
     private Button okButton;
-    private ImageView backButton;
+    private ConstraintLayout backButton;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference reference;
@@ -283,7 +284,7 @@ public class Frag3ReviewQuest extends Fragment {
                 }
                 else if(state==RESULT){
                     // 결과보기
-
+                    ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewResult().newInstance(type, questionSets, current));
                 }
 
             }
@@ -293,7 +294,7 @@ public class Frag3ReviewQuest extends Fragment {
             @Override
             public void onClick(View v) {
                 // 결과보기
-
+                ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewResult().newInstance(type, questionSets, current));
             }
         });
 

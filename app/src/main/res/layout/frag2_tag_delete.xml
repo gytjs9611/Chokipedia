@@ -8,23 +8,38 @@
     >
 
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bt_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="10dp"
-        android:gravity="center"
-        android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/bt_back_img"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:src="@drawable/ic_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
     <TextView
         android:id="@+id/title"
         android:layout_width="140dp"
         android:layout_height="60dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="75dp"
+        android:layout_marginStart="@dimen/common_margin"
+        android:layout_marginTop="@dimen/top_margin"
         android:layout_weight="10"
 
         android:autoSizeTextType="uniform"
@@ -58,9 +73,9 @@
         android:inputType="textPersonName"
         android:textSize="15sp"
         android:background="@android:color/transparent"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="@dimen/common_margin"
+        android:layout_marginEnd="@dimen/common_margin"
+        android:layout_marginTop="@dimen/common_margin"
         android:gravity="bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,11 +85,11 @@
     <ListView
         android:id="@+id/wordList"
         android:layout_width="match_parent"
-        android:layout_height="330dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_height="@dimen/list_height"
+        android:layout_margin="@dimen/common_margin"
         android:choiceMode="multipleChoice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input" />
 
     <RelativeLayout
@@ -84,9 +99,9 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:weightSum="10"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginStart="@dimen/common_margin"
+        android:layout_marginEnd="@dimen/common_margin"
+        android:layout_marginBottom="@dimen/bottom_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

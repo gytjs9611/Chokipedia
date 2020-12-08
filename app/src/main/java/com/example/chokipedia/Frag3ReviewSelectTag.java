@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +36,6 @@ public class Frag3ReviewSelectTag extends Fragment {
     private ArrayList<String> tagDataList = new ArrayList<String>();
 
     private Button startButton;
-    private ImageView backButton;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference tagRef = firebaseDatabase.getReference("dictionary").child("tag_list");
@@ -55,9 +55,10 @@ public class Frag3ReviewSelectTag extends Fragment {
         listView.setAdapter(adapter);
 
         startButton = view.findViewById(R.id.bt_start);
-        backButton = view.findViewById(R.id.bt_back);
+        ConstraintLayout backButton = view.findViewById(R.id.bt_back);
 
-        startButton.setVisibility(View.INVISIBLE);
+        startButton.setBackground(getResources().getDrawable(R.drawable.cancel_button));
+        startButton.setEnabled(false);
 
         tagRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -77,7 +78,8 @@ public class Frag3ReviewSelectTag extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startButton.setVisibility(View.VISIBLE);
+                startButton.setBackground(getResources().getDrawable(R.drawable.ok_button));
+                startButton.setEnabled(true);
             }
         });
 

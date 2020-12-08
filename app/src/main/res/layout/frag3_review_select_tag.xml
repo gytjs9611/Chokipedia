@@ -6,23 +6,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <ImageView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bt_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="10dp"
-        android:gravity="center"
-        android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/bt_back_img"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:src="@drawable/ic_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="140dp"
         android:layout_height="60dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="75dp"
+        android:layout_marginStart="@dimen/common_margin"
+        android:layout_marginTop="@dimen/top_margin"
 
         android:autoSizeTextType="uniform"
         android:gravity="bottom"
@@ -39,7 +52,7 @@
         android:layout_marginBottom="2dp"
         android:layout_weight="2"
         android:gravity="bottom"
-        android:text="태그"
+        android:text="태그별"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/title"
