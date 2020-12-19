@@ -168,6 +168,18 @@ public class Frag2Tag extends Fragment {
 
 
 
+        // ***
+        // long click 하면 편집/삭제 고르는 다이얼로그 띄우기
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                return true;
+            }
+        });
+
+
+
         addButton = view.findViewById(R.id.add_button);
 
 
@@ -191,8 +203,8 @@ public class Frag2Tag extends Fragment {
             @Override
             public void onClick(View v) {
                 delRef.setValue("null");
-//                ((MainActivity)getActivity()).replaceFragment(frag1Delete.newInstance());
-                ((MainActivity)getActivity()).setFrag(4);
+                ((MainActivity)getActivity()).replaceFragment(new Frag2TagDelete().newInstance(-1));
+//                ((MainActivity)getActivity()).setFrag(4);
             }
         });
 

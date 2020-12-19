@@ -28,7 +28,7 @@
         android:id="@+id/iv_title"
         android:layout_width="25sp"
         android:layout_height="25sp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="@dimen/common_margin"
         android:src="@drawable/ic_title_symbol"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -39,14 +39,14 @@
         android:layout_height="wrap_content"
         android:text="복습메뉴"
         android:textColor="#2f2f2f"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_title"
         app:layout_constraintStart_toEndOf="@+id/iv_title"
         app:layout_constraintTop_toTopOf="@+id/iv_title" />
 
 <!--    menu    -->
     <Button
-        android:id="@+id/basic_review_button"
+        android:id="@+id/bt_review_basic"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/review_button1"
@@ -61,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_title_review" />
 
     <Button
-        android:id="@+id/tag_review_button"
+        android:id="@+id/bt_review_tag"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="15dp"
@@ -71,8 +71,8 @@
         android:textSize="20sp"
         android:layout_marginStart="@dimen/common_margin"
         android:layout_marginEnd="@dimen/common_margin"
-        app:layout_constraintStart_toStartOf="@+id/basic_review_button"
-        app:layout_constraintTop_toBottomOf="@+id/basic_review_button" />
+        app:layout_constraintStart_toStartOf="@+id/bt_review_basic"
+        app:layout_constraintTop_toBottomOf="@+id/bt_review_basic" />
 
 
 
@@ -84,33 +84,49 @@
         android:layout_marginTop="50dp"
         android:src="@drawable/ic_title_symbol"
         app:layout_constraintStart_toStartOf="@+id/iv_title"
-        app:layout_constraintTop_toBottomOf="@+id/tag_review_button" />
+        app:layout_constraintTop_toBottomOf="@+id/bt_review_tag" />
 
     <TextView
-        android:id="@+id/tv_title_result"
+        android:id="@+id/tv_title_wrong_answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="결과메뉴"
+        android:text="오답메뉴"
         android:textColor="#2f2f2f"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_title_result"
         app:layout_constraintStart_toEndOf="@+id/iv_title_result"
         app:layout_constraintTop_toTopOf="@+id/iv_title_result" />
 
 <!--    menu    -->
     <Button
-        android:id="@+id/review_result_button"
+        android:id="@+id/bt_review_wrong_answer"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="15dp"
         android:layout_marginStart="@dimen/common_margin"
         android:layout_marginEnd="@dimen/common_margin"
         android:background="@drawable/review_button3"
-        android:text="결과 모아보기"
+        android:text="오답 모아보기"
         android:textColor="#ffffff"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/iv_title_result"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_result" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_wrong_answer" />
+
+
+    <Button
+        android:id="@+id/bt_reset_data"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="@dimen/common_margin"
+        android:background="@drawable/reset_button"
+        android:layout_marginEnd="@dimen/common_margin"
+        android:layout_marginTop="15dp"
+        android:text="오답 데이터 초기화"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/iv_title_result"
+        app:layout_constraintTop_toBottomOf="@+id/bt_review_wrong_answer" />
+
 
 
 

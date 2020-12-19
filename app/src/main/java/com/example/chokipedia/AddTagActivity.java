@@ -3,7 +3,6 @@ package com.example.chokipedia;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -31,7 +30,7 @@ public class AddTagActivity extends Activity {
 
     public void mOnClose(View v){
         Toast addTagMsg;
-        tagNameInput = findViewById(R.id.tag_name);
+        tagNameInput = findViewById(R.id.tv_msg);
         String input;
 
         input = tagNameInput.getText().toString();

@@ -1,18 +1,16 @@
 package com.example.chokipedia;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +27,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 public class Frag3ReviewQuest extends Fragment {
+
+    private int REVIEW_RESULT = 3;
 
     final private int OK = 0;
     final private int NEXT = 1;
@@ -52,9 +55,10 @@ public class Frag3ReviewQuest extends Fragment {
     private EditText answerEditText;
 
     private CardView answerCard;
-    private Button resultButton;
     private Button okButton;
     private ConstraintLayout backButton;
+
+    private ArrayList<QuestionSet> questionSets = new ArrayList<QuestionSet>();
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference reference;
@@ -65,7 +69,34 @@ public class Frag3ReviewQuest extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("type", type);
         fragment.setArguments(bundle);
+
         return fragment;
+    }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REVIEW_RESULT){
+            if(resultCode==RESULT_OK){  // 복습 취소 ok
+                Log.d("CHECK", "ok is clicked");
+                if(current>=0){
+                    ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewResult().newInstance(type, questionSets, current));
+                }
+                else{   // 데이터 없는 경우 메인으로 돌아가기(current==-1)
+                    if(type=="일반"){
+                        ((MainActivity)getActivity()).replaceFragment(new Frag3Review().newInstance());
+                    }
+                    else{
+                        ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewSelectTag().newInstance());
+                    }
+                }
+            }
+            else if(resultCode==RESULT_CANCELED){   // 복습 취소 cancel
+                Log.d("CHECK", "cancel is clicked");
+            }
+        }
     }
 
     @Nullable
@@ -75,7 +106,7 @@ public class Frag3ReviewQuest extends Fragment {
 
         type = getArguments().getString("type");
         typeTitle = view.findViewById(R.id.type);
-        tagTitle = view.findViewById(R.id.tag_name);
+        tagTitle = view.findViewById(R.id.tv_msg);
 
         if(type.equals("일반")){  // 일반 복습
             typeTitle.setVisibility(View.VISIBLE);
@@ -103,7 +134,6 @@ public class Frag3ReviewQuest extends Fragment {
 
 
         answerCard = view.findViewById(R.id.cv_answer);
-        resultButton = view.findViewById(R.id.bt_result);
         okButton = view.findViewById(R.id.bt_ok);
         backButton = view.findViewById(R.id.bt_back);
 
@@ -130,7 +160,7 @@ public class Frag3ReviewQuest extends Fragment {
         questionTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
 
 
-        final ArrayList<QuestionSet> questionSets = new ArrayList<QuestionSet>();
+
 
 
         reference = firebaseDatabase.getReference("dictionary").child("word_list");
@@ -171,11 +201,14 @@ public class Frag3ReviewQuest extends Fragment {
                 }
                 Collections.shuffle(questionSets);  // 랜덤 순서
                 if(totalNum>0){
+                    TextView qMark = view.findViewById(R.id.tv_q_mark);
+                    qMark.setVisibility(View.VISIBLE);
                     indexTextView.setText((current+1) + " / " + totalNum);
                     questionTextView.setText(questionSets.get(current).getQuestion());
                     answerTextView.setText(questionSets.get(current).getAnswer());
                 }
                 else{   // 데이터 없는 경우
+                    current = -1;
                     TextView qMark = view.findViewById(R.id.tv_q_mark);
                     TextView noDataTextView = view.findViewById(R.id.tv_no_data);
 
@@ -200,19 +233,18 @@ public class Frag3ReviewQuest extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(type.equals("일반")){
-                    ((MainActivity)getActivity()).replaceFragment(new Frag3Review().newInstance());
-                }
-                else{
-                    ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewSelectTag().newInstance());
-                }
+                Intent intent = new Intent(getActivity(), CheckDialog.class);
+                intent.putExtra("msg", "복습을 종료하시겠습니까?");
+                startActivityForResult(intent, REVIEW_RESULT);
             }
         });
+        // **
+
+
 
 
 
         answerCard.setVisibility(View.INVISIBLE);
-        resultButton.setVisibility(View.INVISIBLE);
 
 
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -224,11 +256,9 @@ public class Frag3ReviewQuest extends Fragment {
                 if(state==OK){ // 확인버튼인 상태
                     // 정답 표시
                     answerCard.setVisibility(View.VISIBLE);
-                    resultButton.setVisibility(View.VISIBLE);
                     answerEditText.setEnabled(false);
 
                     if(current==totalNum-1){
-                        resultButton.setVisibility(View.INVISIBLE);
                         okButton.setBackgroundResource(R.drawable.close_button);
                         okButton.setText("결과보기");
                         okButton.setTextSize(18);
@@ -264,7 +294,6 @@ public class Frag3ReviewQuest extends Fragment {
                 else if(state==NEXT){
                     // 정답 표시 x
                     answerCard.setVisibility(View.INVISIBLE);
-                    resultButton.setVisibility(View.INVISIBLE);
                     answerEditText.setEnabled(true);
                     answerEditText.setText("");
 
@@ -287,14 +316,6 @@ public class Frag3ReviewQuest extends Fragment {
                     ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewResult().newInstance(type, questionSets, current));
                 }
 
-            }
-        });
-
-        resultButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 결과보기
-                ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewResult().newInstance(type, questionSets, current));
             }
         });
 

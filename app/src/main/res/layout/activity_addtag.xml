@@ -28,7 +28,7 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/tag_name"
+            android:id="@+id/tv_msg"
             android:textSize="15sp"
             android:textColor="#000"
             android:background="#FFFFFF"

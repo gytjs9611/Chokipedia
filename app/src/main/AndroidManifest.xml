@@ -36,6 +36,10 @@
             android:name=".TagDeleteAlertDialog"
             android:theme="@style/AddTagPopUp">
         </activity>
+        <activity
+            android:name=".CheckDialog"
+            android:theme="@style/AddTagPopUp">
+        </activity>
 
     </application>
 

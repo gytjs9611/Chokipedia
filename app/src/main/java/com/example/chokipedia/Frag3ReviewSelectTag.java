@@ -1,6 +1,7 @@
 package com.example.chokipedia;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +27,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_OK;
+
 public class Frag3ReviewSelectTag extends Fragment {
+
+    private int TAG_REVIEW = 0;
 
     private View view;
     private Frag3ReviewQuest frag3ReviewQuest;
@@ -36,6 +41,7 @@ public class Frag3ReviewSelectTag extends Fragment {
     private ArrayList<String> tagDataList = new ArrayList<String>();
 
     private Button startButton;
+    private String selectedTag;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference tagRef = firebaseDatabase.getReference("dictionary").child("tag_list");
@@ -44,6 +50,17 @@ public class Frag3ReviewSelectTag extends Fragment {
 
     public static Frag3ReviewSelectTag newInstance() {
         return new Frag3ReviewSelectTag();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==TAG_REVIEW){
+            if(resultCode==RESULT_OK){  // 복습 시작
+                ((MainActivity)getActivity()).replaceFragment(frag3ReviewQuest.newInstance(selectedTag));
+            }
+        }
     }
 
     @Nullable
@@ -87,8 +104,11 @@ public class Frag3ReviewSelectTag extends Fragment {
             @Override
             public void onClick(View v) {
                 int position = listView.getCheckedItemPosition();
-                String selectedTag = listView.getItemAtPosition(position).toString().substring(2);
-                ((MainActivity)getActivity()).replaceFragment(frag3ReviewQuest.newInstance(selectedTag));
+                selectedTag = listView.getItemAtPosition(position).toString().substring(2);
+
+                Intent intent = new Intent(getActivity(), CheckDialog.class);
+                intent.putExtra("msg", "복습을 시작하시겠습니까?");
+                startActivityForResult(intent, TAG_REVIEW);
             }
         });
 

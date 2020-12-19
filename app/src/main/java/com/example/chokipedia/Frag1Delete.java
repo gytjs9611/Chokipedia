@@ -2,6 +2,7 @@ package com.example.chokipedia;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.SparseBooleanArray;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.ChildEventListener;
@@ -40,10 +42,8 @@ public class Frag1Delete extends Fragment {
 
     private EditText editText;
     private TextView totalCnt;
-    public String msg;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference searchRef = firebaseDatabase.getReference();
 
     private ChildEventListener mChild;
     // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
@@ -57,18 +57,21 @@ public class Frag1Delete extends Fragment {
     // array배열 생성, listview와 연결
     List<String> Array = new ArrayList<String>();
 
-    private String search_keyword;
 
     private Button deleteButton, cancelButton;
 
-    private String click_data, flag;
+    private String flag;
 
     private Toast deleteMsg;
 
+    private static int mPosition = -1;
 
-    public static Frag1Delete newInstance(){
+
+    public static Frag1Delete newInstance(int position){
+        mPosition = position;
         return new Frag1Delete();
     }
+
 
     @Nullable
     @Override
@@ -83,7 +86,8 @@ public class Frag1Delete extends Fragment {
 
         listView.setAdapter(adapter);
 
-        ImageView backButton = view.findViewById(R.id.bt_back);
+
+        ConstraintLayout backButton = view.findViewById(R.id.bt_back);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,68 +97,14 @@ public class Frag1Delete extends Fragment {
         });
 
 
-        editText = view.findViewById(R.id.input); // 검색어입력란
-
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                search_keyword = s.toString();
-                searchRef = firebaseDatabase.getReference("dictionary").child("word_list");
-                searchRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
-                        adapter.clear();
-                        Array.clear(); // 얘를 추가해야 중복으로 아이템 추가 안됨
-
-                        if(search_keyword.length()>0) { //검색어 입력된 경우
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                String dataItem = data.getKey();
-                                if (dataItem.compareTo(search_keyword) == 0) {
-                                    Array.add(dataItem);
-                                    adapter.add(dataItem);
-                                }
-                            }
-                        }
-                        else{ // 검색어 입력되지 않은 경우
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                String dataItem = data.getKey();
-                                Array.add(dataItem);
-                                adapter.add(dataItem);
-                            }
-                        }
-
-                        int cnt;
-                        String cntString;
-                        cnt = listView.getCount();
-                        cntString = Integer.toString(cnt)+"개의 검색결과";
-
-                        totalCnt = view.findViewById(R.id.total_count);
-                        totalCnt.setText(cntString);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
-
+        if(mPosition!=-1){
+            listView.setItemChecked(mPosition, true);
+        }
+        else{
+            listView.setItemChecked(mPosition, false);
+        }
 
 
         listRef = firebaseDatabase.getReference("dictionary").child("word_list");
@@ -196,43 +146,46 @@ public class Frag1Delete extends Fragment {
         delRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                flag = dataSnapshot.getValue().toString();
-                if(flag.compareTo("true")==0){
-                    System.out.println("삭제하는 코드 실행");
-                    SparseBooleanArray checkedItems;
-                    checkedItems = listView.getCheckedItemPositions();
+                if(dataSnapshot.exists() && getActivity()!=null){
+                    flag = dataSnapshot.getValue().toString();
+                    if(flag.compareTo("true")==0){
+                        System.out.println("삭제하는 코드 실행");
+                        SparseBooleanArray checkedItems;
+                        checkedItems = listView.getCheckedItemPositions();
 
-                    int count = adapter.getCount() ;
-                    for (int i = count-1; i >= 0; i--) {
-                        if (checkedItems.get(i)) {
-                            // 삭제코드
-                            delete_data = adapter.getItem(i);
-                            if(flag.compareTo("true")==0){ // 삭제 후 다시 추가하는 경우를 위해
-                                listRef.child(delete_data).removeValue();
+                        int count = adapter.getCount() ;
+                        for (int i = count-1; i >= 0; i--) {
+                            if (checkedItems.get(i)) {
+                                // 삭제코드
+                                delete_data = adapter.getItem(i);
+                                if(flag.compareTo("true")==0){ // 삭제 후 다시 추가하는 경우를 위해
+                                    listRef.child(delete_data).removeValue();
+                                }
                             }
                         }
+                        // 모든 선택 상태 초기화.
+                        listView.clearChoices();
+                        adapter.notifyDataSetChanged();
+
+                        delRef.setValue("null");
+                        deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
+                        deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                        deleteMsg.show();
+
+                        ((MainActivity)getActivity()).setFrag(0);
+
                     }
-                    // 모든 선택 상태 초기화.
-                    listView.clearChoices();
-                    adapter.notifyDataSetChanged();
-
-                    deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
-                    deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
-                    deleteMsg.show();
-
-//                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-                    ((MainActivity)getActivity()).setFrag(0);
-                    delRef.setValue("null");
-                }
-                else if(flag.compareTo("false")==0){
-                    System.out.println("아무 변화 없음");
+                    else if(flag.compareTo("false")==0){
+                        System.out.println("아무 변화 없음");
 //                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
 //                    ((MainActivity)getActivity()).setFrag(0);
-                }
-                else{
-                    System.out.println("아무 변화 없음");
+                    }
+                    else{
+                        System.out.println("아무 변화 없음");
 //                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
+                    }
                 }
+
             }
 
             @Override

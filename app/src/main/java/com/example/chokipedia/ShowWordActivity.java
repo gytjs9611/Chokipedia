@@ -3,6 +3,7 @@ package com.example.chokipedia;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -53,22 +54,46 @@ public class ShowWordActivity extends Activity {
         tag2 = findViewById(R.id.show_tag2);
 
 
-
-        wordRef.addValueEventListener(new ValueEventListener() {
+        wordRef.child(click_data).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    if(click_data.compareTo(data.getKey())==0){
 
-                        word.setText(data.getKey());
-                        showData(mean1, "1. " , data.child("meaning1").getValue().toString());
-                        showData(mean2, "2. " , data.child("meaning2").getValue().toString());
-                        showData(ex1, "예) " , data.child("example1").getValue().toString());
-                        showData(ex2, "예) " , data.child("example2").getValue().toString());
-                        showData(tag1, "# " , data.child("tag1").getValue().toString());
-                        showData(tag2, "# " , data.child("tag2").getValue().toString());
-                    }
-                }
+                        word.setText(dataSnapshot.getKey());
+
+                        String strMean1 = dataSnapshot.child("meaning1").getValue().toString();
+                        String strMean2 = dataSnapshot.child("meaning2").getValue().toString();
+                        String strEx1 = dataSnapshot.child("example1").getValue().toString();
+                        String strEx2 = dataSnapshot.child("example2").getValue().toString();
+                        String strTag1 = dataSnapshot.child("tag1").getValue().toString();
+                        String strTag2 = dataSnapshot.child("tag2").getValue().toString();
+                        Log.d("SHOW_WORD", "data: "+strMean1+" "+strMean2 +" "+ strEx1 + " " + strEx2 +" "+strTag1+" "+strTag2);
+
+                        // meaning
+                        if(strMean1.equals("") && strMean2.equals("")){
+                            Log.d("SHOW_WORD", "mean null");
+                            TextView meanTitle = findViewById(R.id.mean_title);
+                            meanTitle.setVisibility(View.GONE);
+                        }
+                        else{
+                            showData(mean1, " - " , strMean1);
+                            showData(mean2, " - " , strMean2);
+                        }
+
+                        //example
+                        if(strEx1.equals("") && strEx2.equals("")){
+                            TextView meanTitle = findViewById(R.id.ex_title);
+                            meanTitle.setVisibility(View.GONE);
+                        }
+                        else{
+                            showData(ex1, " - " , strEx1);
+                            showData(ex2, " - " , strEx2);
+                        }
+
+                        // tag
+                        showData(tag1, "# " , strTag1);
+                        showData(tag2, "# " , strTag2);
+
+
             }
 
             @Override

@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+<!--    title -->
     <TextView
         android:id="@+id/title"
         android:layout_width="140dp"
         android:layout_height="60dp"
         android:layout_marginStart="@dimen/common_margin"
         android:layout_marginTop="@dimen/top_margin"
+
         android:autoSizeTextType="uniform"
         android:gravity="bottom"
-        android:text="복습결과"
+        android:text="복습하기"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,114 +28,86 @@
         android:layout_marginBottom="2dp"
         android:layout_weight="2"
         android:gravity="bottom"
-        android:text="일반"
+        android:text="오답 모아보기"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintStart_toEndOf="@+id/title" />
 
-    <TextView
-        android:id="@+id/tv_msg"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:background="@drawable/tag_button2"
-        android:gravity="center"
-        android:minWidth="10dp"
-        android:padding="10dp"
-        android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/title"
-        app:layout_constraintStart_toStartOf="@+id/type" />
-
-
-    <!--    score   -->
+<!--    listview title -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bt_score"
-        android:layout_width="250dp"
-        android:layout_height="90dp"
-        android:background="@drawable/bg_score"
-        android:layout_marginTop="@dimen/common_margin"
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_margin"
+        android:layout_marginEnd="@dimen/common_margin"
+        android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/title">
+
 
         <TextView
-            android:id="@+id/tv_score_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_index"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:gravity="center"
-            android:text="점수"
-            android:textColor="#2f2f2f"
-            android:textSize="20sp"
+            android:text="순위"
             android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <TextView
-            android:id="@+id/tv_score"
+            android:id="@+id/tv_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="단어"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_rate"
+            app:layout_constraintStart_toEndOf="@+id/tv_index"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_rate"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
             android:gravity="center"
-            android:text="5 / 10"
-            android:textColor="#2f2f2f"
-            android:textSize="30sp"
+            android:text="오답률"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_score_title" />
-
-
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-<!--    wrong answers   -->
 
-    <TextView
-        android:id="@+id/tv_wrong_answer_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin"
-        android:layout_marginStart="@dimen/common_margin"
-        android:text="오답 목록"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="#000000"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bt_score" />
-
-
+<!--    word list -->
     <ListView
         android:id="@+id/lv_wrongAnswerList"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="350dp"
         android:layout_marginStart="@dimen/common_margin"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="@dimen/common_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_wrong_answer_title" />
-
-
-    <Button
-        android:id="@+id/bt_again"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:background="@drawable/ok_button"
-        android:text="한 번 더 풀기"
-        android:textColor="#ffffff"
-        android:textSize="15sp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lv_wrongAnswerList" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
 
 
+<!--    close button -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bt_back"
         android:layout_width="40dp"
@@ -156,7 +130,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 

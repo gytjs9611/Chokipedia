@@ -93,35 +93,47 @@ public class AddWordActivity extends Activity {
 
 
                 if(s_word.length()>0){
-                    addRef.child(s_word).child("meaning1").setValue(s_mean1);
-                    addRef.child(s_word).child("meaning2").setValue(s_mean2);
-                    addRef.child(s_word).child("example1").setValue(s_ex1);
-                    addRef.child(s_word).child("example2").setValue(s_ex2);
-                    addRef.child(s_word).child("tag1").setValue(s_tag1);
-                    addRef.child(s_word).child("tag2").setValue(s_tag2);
 
-                    if(s_tag1.length()>0){
-                        tagRef.child(s_tag1).setValue(0);
+                    if(s_mean1.equals("") && s_mean2.equals("")){
+                        Toast errMsg;
+                        errMsg = Toast.makeText(getApplicationContext(), "의미를 입력하세요.", Toast.LENGTH_SHORT);
+                        errMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                        errMsg.show();
                     }
-                    if(s_tag2.length()>0){
-                        tagRef.child(s_tag2).setValue(0);
+                    else{
+                        addRef.child(s_word).child("meaning1").setValue(s_mean1);
+                        addRef.child(s_word).child("meaning2").setValue(s_mean2);
+                        addRef.child(s_word).child("example1").setValue(s_ex1);
+                        addRef.child(s_word).child("example2").setValue(s_ex2);
+                        addRef.child(s_word).child("tag1").setValue(s_tag1);
+                        addRef.child(s_word).child("tag2").setValue(s_tag2);
+                        // 복습 데이터
+                        addRef.child(s_word).child("wrongCnt").setValue(0);
+                        addRef.child(s_word).child("reviewCnt").setValue(0);
+
+                        if(s_tag1.length()>0){
+                            tagRef.child(s_tag1).setValue(0);
+                        }
+                        if(s_tag2.length()>0){
+                            tagRef.child(s_tag2).setValue(0);
+                        }
+
+                        Toast completeMsg;
+                        completeMsg = Toast.makeText(getApplicationContext(), "성공적으로 추가되었습니다.", Toast.LENGTH_SHORT);
+                        completeMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                        completeMsg.show();
+                        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 성공적으로 추가됨!!!!!!!");
+                        finish();
                     }
-
-                    Toast completeMsg;
-                    completeMsg = Toast.makeText(getApplicationContext(), "성공적으로 추가되었습니다.", Toast.LENGTH_SHORT);
-                    completeMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
-                    completeMsg.show();
-                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 성공적으로 추가됨!!!!!!!");
-                    finish();
-
                 }
                 else{
                     // 에러메세지 출력
                     Toast errMsg;
-                    errMsg = Toast.makeText(getApplicationContext(), "최소 1글자 이상 입력하세요.", Toast.LENGTH_SHORT);
+                    errMsg = Toast.makeText(getApplicationContext(), "단어명을 입력하세요.", Toast.LENGTH_SHORT);
                     errMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
                     errMsg.show();
                 }
+
 
             }
         });

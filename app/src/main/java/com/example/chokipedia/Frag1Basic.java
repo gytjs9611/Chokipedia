@@ -2,6 +2,7 @@ package com.example.chokipedia;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -57,8 +58,19 @@ public class Frag1Basic extends Fragment {
 
     private String click_data;
 
+    Parcelable state;
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        state = listView.onSaveInstanceState();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
 
     public static Frag1Basic newInstance(){
         return new Frag1Basic();
@@ -154,7 +166,9 @@ public class Frag1Basic extends Fragment {
                 for(DataSnapshot messageData : dataSnapshot.getChildren()){
                     String msg2 = messageData.getKey();
                     Array.add(msg2);
-                    adapter.add(msg2);
+                    adapter.add(msg2);/*
+                    listRef.child(msg2).child("reviewCnt").setValue(0);   // 0 으로 초기화한 데이터 추가
+                    listRef.child(msg2).child("wrongCnt").setValue(0);*/
                 }
                 adapter.notifyDataSetChanged();
                 listView.setSelection(adapter.getCount()-1);
@@ -193,6 +207,16 @@ public class Frag1Basic extends Fragment {
             }
         });
 
+        // ***
+        // long click 하면 편집/삭제 고르는 다이얼로그 띄우기
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                return true;
+            }
+        });
+
 
 
         addButton = view.findViewById(R.id.add_button);
@@ -215,8 +239,8 @@ public class Frag1Basic extends Fragment {
             @Override
             public void onClick(View v) {
                 delRef.setValue("null");
-//                ((MainActivity)getActivity()).replaceFragment(frag1Delete.newInstance());
-                ((MainActivity)getActivity()).setFrag(3);
+                ((MainActivity)getActivity()).replaceFragment(frag1Delete.newInstance(-1));
+//                ((MainActivity)getActivity()).setFrag(3);
             }
         });
 

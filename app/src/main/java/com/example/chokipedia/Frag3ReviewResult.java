@@ -17,6 +17,12 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class Frag3ReviewResult extends Fragment {
@@ -38,8 +44,14 @@ public class Frag3ReviewResult extends Fragment {
 
     private String clickData;
 
-    public Frag3ReviewResult() {
-    }
+    private int reviewCnt;
+    private int wrongCnt;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference wordRef = firebaseDatabase.getReference("dictionary").child("word_list");
+
+   /* public Frag3ReviewResult() {
+    }*/
 
 
     public static Frag3ReviewResult newInstance(String reviewType, ArrayList<QuestionSet> data, int size){
@@ -56,7 +68,7 @@ public class Frag3ReviewResult extends Fragment {
 
         // title
         typeTitle = view.findViewById(R.id.type);
-        tagTitle = view.findViewById(R.id.tag_name);
+        tagTitle = view.findViewById(R.id.tv_msg);
         // score
         scoreTextView = view.findViewById(R.id.tv_score);
 
@@ -74,7 +86,7 @@ public class Frag3ReviewResult extends Fragment {
 
         wordList = new ArrayList<String>();
 
-        listView = view.findViewById(R.id.wrongAnswerList);
+        listView = view.findViewById(R.id.lv_wrongAnswerList);
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, wordList);
         listView.setAdapter(adapter);
 
@@ -83,14 +95,50 @@ public class Frag3ReviewResult extends Fragment {
 
         int sum = 0;
         Log.d("TAG", "size="+totalNum);
+
         for(int i = 0; i<=totalNum; i++){
-            String word = questionSet.get(i).getAnswer();
+            final String word = questionSet.get(i).getAnswer();
             Log.d("TAG", "틀린 단어 "+word);
+
+            wordRef.child(word).child("reviewCnt").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String data = dataSnapshot.getValue().toString();
+                    reviewCnt = Integer.parseInt(data);
+                    Log.d("TAG", word+":reviewCnt="+reviewCnt);
+                    reviewCnt++;
+                    Log.d("TAG", "reviewCnt="+reviewCnt);
+                    wordRef.child(word).child("reviewCnt").setValue(reviewCnt);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+
             if(questionSet.get(i).getResult()) {
                 sum++;
             }
             else{   // 오답일 경우 오답 리스트에 추가
                 wordList.add(word);
+                wordRef.child(word).child("wrongCnt").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String data = dataSnapshot.getValue().toString();
+                        wrongCnt = Integer.parseInt(data);
+                        wrongCnt++;
+                        wordRef.child(word).child("wrongCnt").setValue(wrongCnt);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
             }
         }
         adapter.notifyDataSetChanged();
@@ -112,7 +160,12 @@ public class Frag3ReviewResult extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).replaceFragment(new Frag3Review().newInstance());
+                if(type=="일반"){
+                    ((MainActivity)getActivity()).replaceFragment(new Frag3Review().newInstance());
+                }
+                else{
+                    ((MainActivity)getActivity()).replaceFragment(new Frag3ReviewSelectTag().newInstance());
+                }
             }
         });
 

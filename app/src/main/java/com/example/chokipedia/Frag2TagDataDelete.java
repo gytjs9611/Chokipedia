@@ -39,15 +39,9 @@ public class Frag2TagDataDelete extends Fragment {
 
     private Frag2TagData frag2TagData;
 
-    private EditText editText;
     private TextView totalCnt;
-    public String msg;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference searchRef = firebaseDatabase.getReference();
-
-    private ChildEventListener mChild;
-    // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
     private DatabaseReference listRef, delRef;
     private String delete_data;
@@ -58,22 +52,24 @@ public class Frag2TagDataDelete extends Fragment {
     // array배열 생성, listview와 연결
     List<String> Array = new ArrayList<String>();
 
-    private String search_keyword;
 
     private Button deleteButton, cancelButton;
 
-    private String click_data, flag;
+    private String flag;
 
     private String click_tag_data;
 
     private Toast deleteMsg;
 
+    private static int mPosition;
 
-    public static Frag2TagDataDelete newInstance(String click_data){
+
+    public static Frag2TagDataDelete newInstance(String click_data, int position){
         Frag2TagDataDelete fragment = new Frag2TagDataDelete();
         Bundle bundle = new Bundle(1);
         bundle.putString("click_data", click_data);
         fragment.setArguments(bundle);
+        mPosition = position;
         return fragment;
     }
 
@@ -106,69 +102,6 @@ public class Frag2TagDataDelete extends Fragment {
         // 아이템 view를 선택가능하도록 만듦 : simple_list_item_multiple_choice
 
         listView.setAdapter(adapter);
-
-
-        editText = view.findViewById(R.id.input); // 검색어입력란
-
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                search_keyword = s.toString();
-                searchRef = firebaseDatabase.getReference("dictionary").child("word_list");
-                searchRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-
-                        adapter.clear();
-                        Array.clear(); // 얘를 추가해야 중복으로 아이템 추가 안됨
-
-                        if(search_keyword.length()>0) { //검색어 입력된 경우
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                String dataItem = data.getKey();
-                                if (dataItem.compareTo(search_keyword) == 0) {
-                                    Array.add(dataItem);
-                                    adapter.add(dataItem);
-                                }
-                            }
-                        }
-                        else{ // 검색어 입력되지 않은 경우
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                String dataItem = data.getKey();
-                                Array.add(dataItem);
-                                adapter.add(dataItem);
-                            }
-                        }
-
-                        int cnt;
-                        String cntString;
-                        cnt = listView.getCount();
-                        cntString = Integer.toString(cnt)+"개의 검색결과";
-
-                        totalCnt = view.findViewById(R.id.total_count);
-                        totalCnt.setText(cntString);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
 
 
 
@@ -210,49 +143,64 @@ public class Frag2TagDataDelete extends Fragment {
             }
         });
 
+        if(mPosition!=-1){
+            listView.setItemChecked(mPosition, true);
+        }
+        else{
+            listView.setItemChecked(mPosition, false);
+        }
+
+
+
+
         delRef = firebaseDatabase.getReference("dictionary").child("state").child("tagdata_delete");
 
 
         delRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                flag = dataSnapshot.getValue().toString();
-                if(flag.compareTo("true")==0){
-                    System.out.println("삭제하는 코드 실행");
-                    SparseBooleanArray checkedItems;
-                    checkedItems = listView.getCheckedItemPositions();
+                if(dataSnapshot.exists() && getActivity()!=null){
+                    flag = dataSnapshot.getValue().toString();
+                    if(flag.compareTo("true")==0){
+                        System.out.println("삭제하는 코드 실행");
+                        SparseBooleanArray checkedItems;
+                        checkedItems = listView.getCheckedItemPositions();
 
-                    int count = adapter.getCount() ;
-                    for (int i = count-1; i >= 0; i--) {
-                        if (checkedItems.get(i)) {
-                            // 삭제코드
-                            delete_data = adapter.getItem(i);
-                            if(flag.compareTo("true")==0){ // 삭제 후 다시 추가하는 경우를 위해
-                                listRef.child(delete_data).removeValue();
+                        int count = adapter.getCount() ;
+                        for (int i = count-1; i >= 0; i--) {
+                            if (checkedItems.get(i)) {
+                                // 삭제코드
+                                delete_data = adapter.getItem(i);
+                                if(flag.compareTo("true")==0){ // 삭제 후 다시 추가하는 경우를 위해
+                                    listRef.child(delete_data).removeValue();
+                                }
                             }
                         }
-                    }
-                    // 모든 선택 상태 초기화.
-                    listView.clearChoices();
-                    adapter.notifyDataSetChanged();
+                        // 모든 선택 상태 초기화.
+                        listView.clearChoices();
+                        adapter.notifyDataSetChanged();
 
 //                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-                    ((MainActivity)getActivity()).replaceFragment(frag2TagData.newInstance(click_tag_data));
-                    delRef.child("delete").setValue("null");
 
-                    deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
-                    deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
-                    deleteMsg.show();
-                }
-                else if(flag.compareTo("false")==0){
-                    System.out.println("아무 변화 없음");
+                         delRef.setValue("null");
+                         deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
+                         deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                         deleteMsg.show();
+                         ((MainActivity)getActivity()).replaceFragment(frag2TagData.newInstance(click_tag_data));
+
+
+                    }
+                    else if(flag.compareTo("false")==0){
+                        System.out.println("아무 변화 없음");
 //                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
 //                    ((MainActivity)getActivity()).setFrag(0);
-                }
-                else{
-                    System.out.println("아무 변화 없음");
+                    }
+                    else{
+                        System.out.println("아무 변화 없음");
 //                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
+                    }
                 }
+
             }
 
             @Override

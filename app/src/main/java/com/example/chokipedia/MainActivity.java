@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame, fragment).commit();
+        fragmentTransaction.replace(R.id.main_frame, fragment).commitNow();
     }
 
 
@@ -97,27 +97,27 @@ public class MainActivity extends AppCompatActivity {
         switch(n){ // 총 4가지의 fragment가 교체됨
             case 0:
                 ft.replace(R.id.main_frame, basic);
-                ft.commit(); // 저장을 의미
+                ft.commitNow(); // 저장을 의미
                 break;
             case 1:
                 ft.replace(R.id.main_frame, tag);
-                ft.commit();
+                ft.commitNow();
                 break;
             case 2:
                 ft.replace(R.id.main_frame, review);
-                ft.commit();
+                ft.commitNow();
                 break;
             case 3:
                 ft.replace(R.id.main_frame, basic_delete);
-                ft.commit();
+                ft.commitNow();
                 break;
             case 4:
                 ft.replace(R.id.main_frame, tag_delete);
-                ft.commit();
+                ft.commitNow();
                 break;
             case 5:
                 ft.replace(R.id.main_frame, tagdata_delete);
-                ft.commit();
+                ft.commitNow();
                 break;
         }
     }
