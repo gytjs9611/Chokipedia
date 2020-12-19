@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,23 +33,20 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class Frag2TagDelete extends Fragment {
+
+    private int DELETE_TAG_CODE = 0;
 
     private View view;
 
-    private Frag2TagData frag2TagData;
-
-    private EditText editText;
     private TextView totalCnt;
-    public String msg;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference searchRef = firebaseDatabase.getReference();
 
-    private ChildEventListener mChild;
-    // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
-    private DatabaseReference listRef, delRef, dataRef;
+    private DatabaseReference listRef, dataRef;
     private String delete_data;
 
 
@@ -57,20 +55,72 @@ public class Frag2TagDelete extends Fragment {
     // array배열 생성, listview와 연결
     List<String> Array = new ArrayList<String>();
 
-    private String search_keyword;
-
     private Button deleteButton, cancelButton;
-
-    private String click_data, flag;
-
-    private String click_tag_data;
 
     private Toast deleteMsg;
 
-    private static int mPosition = -1;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==DELETE_TAG_CODE && getActivity()!=null){
+            if(resultCode==RESULT_OK){
+                // 삭제
+                SparseBooleanArray checkedItems;
+                checkedItems = listView.getCheckedItemPositions();
 
-    public static Frag2TagDelete newInstance(int position){
-        mPosition = position;
+                int count = adapter.getCount() ;
+
+                for (int i = count-1; i >= 0; i--) {
+
+                    if (checkedItems.get(i)) {
+                        // 삭제코드
+                        delete_data = adapter.getItem(i);
+                        delete_data = delete_data.substring(2);
+                        Log.d("TAG_DELETE_CHECK", delete_data);
+
+                        listRef.child(delete_data).removeValue(); // tag 목록에서 삭제
+
+                        // 태그 목록에서 삭제한 태그 정보 tag1, tag2에 있으면 지워줌
+                        dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for(DataSnapshot data : dataSnapshot.getChildren()){
+                                    String word = data.getKey();
+                                    String tag1 = data.child("tag1").getValue(String.class);
+                                    String tag2 = data.child("tag2").getValue(String.class);
+
+                                    if(tag1.equals(delete_data)){
+                                        dataRef.child(word).child("tag1").setValue("");
+                                    }
+                                    if(tag2.equals(delete_data)){
+                                        dataRef.child(word).child("tag2").setValue("");
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+                // 모든 선택 상태 초기화.
+                listView.clearChoices();
+                adapter.notifyDataSetChanged();
+
+                deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
+                deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                deleteMsg.show();
+                ((MainActivity)getActivity()).replaceFragment(new Frag2Tag().newInstance());
+            }
+        }
+
+    }
+
+    public static Frag2TagDelete newInstance(){
         return new Frag2TagDelete();
     }
 
@@ -80,6 +130,8 @@ public class Frag2TagDelete extends Fragment {
         view = inflater.inflate(R.layout.frag2_tag_delete, container, false);
         //setContentView와 유사
 
+        listRef = firebaseDatabase.getReference("dictionary").child("tag_list");
+        dataRef = firebaseDatabase.getReference("dictionary").child("word_list");
 
 
         listView = view.findViewById(R.id.wordList);
@@ -100,16 +152,15 @@ public class Frag2TagDelete extends Fragment {
 
 
 
-        listRef = firebaseDatabase.getReference("dictionary").child("tag_list");
         listRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 adapter.clear();
 
                 for(DataSnapshot messageData : dataSnapshot.getChildren()){
-                    String msg2 = "# " + messageData.getKey();
-                    Array.add(msg2);
-                    adapter.add(msg2);
+                    String msg = "# " + messageData.getKey();
+                    Array.add(msg);
+                    adapter.add(msg);
                 }
                 adapter.notifyDataSetChanged();
                 listView.setSelection(adapter.getCount()-1);
@@ -130,138 +181,15 @@ public class Frag2TagDelete extends Fragment {
             }
         });
 
-
-        if(mPosition!=-1){
-            listView.setItemChecked(mPosition, true);
-        }
-        else{
-            listView.setItemChecked(mPosition, false);
-        }
-
-        delRef = firebaseDatabase.getReference("dictionary").child("state").child("tag_delete");
-        dataRef = firebaseDatabase.getReference("dictionary").child("word_list");
-
-        delRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && getActivity()!=null){
-                    flag = dataSnapshot.getValue(String.class);
-                    if(flag.compareTo("true")==0){
-                        System.out.println("삭제하는 코드 실행");
-                        SparseBooleanArray checkedItems;
-                        checkedItems = listView.getCheckedItemPositions();
-
-                        int count = adapter.getCount() ;
-                        for (int i = count-1; i >= 0; i--) {
-                            if (checkedItems.get(i)) {
-                                // 삭제코드
-                                delete_data = adapter.getItem(i);
-                                delete_data = delete_data.substring(2);
-
-                                if(flag.compareTo("true")==0){ // 삭제 후 다시 추가하는 경우를 위해
-                                    listRef.child(delete_data).removeValue(); // tag목록에서 삭제
-                                    System.out.println("ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ 태그명 "+delete_data);
-
-                                    // 태그 목록에서 삭제한 태그 정보 tag1에 있으면 지워줌
-                                    dataRef.orderByChild("tag1").equalTo(delete_data).addChildEventListener(new ChildEventListener() {
-                                        @Override
-                                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                            if(flag.compareTo("true")==0) // 체크해줘야함!!
-                                                dataSnapshot.getRef().child("tag1").setValue("");
-                                        }
-
-                                        @Override
-                                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-                                    // 태그 목록에서 삭제한 태그 정보 tag2에 있으면 지워줌
-                                    dataRef.orderByChild("tag2").equalTo(delete_data).addChildEventListener(new ChildEventListener() {
-                                        @Override
-                                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                            if(flag.compareTo("true")==0)
-                                                dataSnapshot.getRef().child("tag2").setValue("");
-                                        }
-
-                                        @Override
-                                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                        // 모든 선택 상태 초기화.
-                        listView.clearChoices();
-                        adapter.notifyDataSetChanged();
-
-                         delRef.setValue("null");
-                         deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
-                         deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
-                         deleteMsg.show();
-                         ((MainActivity)getActivity()).replaceFragment(new Frag2Tag().newInstance());
-
-                    }
-                    else if(flag.compareTo("false")==0){
-                        System.out.println("아무 변화 없음");
-//                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-//                    ((MainActivity)getActivity()).setFrag(0);
-                    }
-                    else{
-                        System.out.println("아무 변화 없음");
-//                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
         deleteButton = view.findViewById(R.id.delete_button);
         cancelButton = view.findViewById(R.id.cancel_button);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), TagDeleteAlertDialog.class);
-                startActivity(intent);
+                Intent intent = new Intent(getActivity(), CheckDialog.class);
+                intent.putExtra("msg", "태그 정보가 모두 삭제됩니다.\n정말 삭제하시겠습니까?");
+                startActivityForResult(intent, DELETE_TAG_CODE);
             }
         });
 

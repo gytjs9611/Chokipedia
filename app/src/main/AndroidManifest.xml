@@ -28,6 +28,8 @@
             android:name=".AddWordActivity"
             android:theme="@style/AddTagPopUp"
             android:windowSoftInputMode="adjustResize"/>
+
+<!--        Dialog      -->
         <activity
             android:name=".MyAlertDialog"
             android:theme="@style/AddTagPopUp">
@@ -39,6 +41,10 @@
         <activity
             android:name=".CheckDialog"
             android:theme="@style/AddTagPopUp">
+        </activity>
+        <activity
+            android:name=".EditDeleteDialog"
+            android:theme="@style/EditDeletePopUp">
         </activity>
 
     </application>

@@ -34,21 +34,19 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class Frag1Delete extends Fragment {
 
+    private int DELETE_CODE = 0;
+
     private View view;
-
-    private Frag1Basic frag1Basic;
-
-    private EditText editText;
     private TextView totalCnt;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-    private ChildEventListener mChild;
-    // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
-    private DatabaseReference listRef, delRef;
+    private DatabaseReference listRef;
     private String delete_data;
 
 
@@ -60,15 +58,42 @@ public class Frag1Delete extends Fragment {
 
     private Button deleteButton, cancelButton;
 
-    private String flag;
 
     private Toast deleteMsg;
 
-    private static int mPosition = -1;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==DELETE_CODE && getActivity()!=null){
+            if(resultCode==RESULT_OK){  // 선택한 단어 삭제
+                SparseBooleanArray checkedItems;
+                checkedItems = listView.getCheckedItemPositions();
+
+                int count = adapter.getCount() ;
+                for (int i = count-1; i >= 0; i--) {
+                    if (checkedItems.get(i)) {
+                        // 삭제코드
+                        delete_data = adapter.getItem(i);
+                        listRef.child(delete_data).removeValue();
+                    }
+                }
+                // 모든 선택 상태 초기화.
+                listView.clearChoices();
+                adapter.notifyDataSetChanged();
+
+                deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
+                deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                deleteMsg.show();
+                ((MainActivity)getActivity()).replaceFragment(Frag1Basic.newInstance());
+            }
+
+        }
+
+    }
 
 
-    public static Frag1Delete newInstance(int position){
-        mPosition = position;
+
+    public static Frag1Delete newInstance(){
         return new Frag1Delete();
     }
 
@@ -92,19 +117,10 @@ public class Frag1Delete extends Fragment {
             @Override
             public void onClick(View v) {
                 listView.clearChoices();
-                ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
+                ((MainActivity)getActivity()).replaceFragment(Frag1Basic.newInstance());
             }
         });
 
-
-
-
-        if(mPosition!=-1){
-            listView.setItemChecked(mPosition, true);
-        }
-        else{
-            listView.setItemChecked(mPosition, false);
-        }
 
 
         listRef = firebaseDatabase.getReference("dictionary").child("word_list");
@@ -140,60 +156,6 @@ public class Frag1Delete extends Fragment {
             }
         });
 
-        delRef = firebaseDatabase.getReference("dictionary").child("state").child("delete");
-
-
-        delRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && getActivity()!=null){
-                    flag = dataSnapshot.getValue().toString();
-                    if(flag.compareTo("true")==0){
-                        System.out.println("삭제하는 코드 실행");
-                        SparseBooleanArray checkedItems;
-                        checkedItems = listView.getCheckedItemPositions();
-
-                        int count = adapter.getCount() ;
-                        for (int i = count-1; i >= 0; i--) {
-                            if (checkedItems.get(i)) {
-                                // 삭제코드
-                                delete_data = adapter.getItem(i);
-                                if(flag.compareTo("true")==0){ // 삭제 후 다시 추가하는 경우를 위해
-                                    listRef.child(delete_data).removeValue();
-                                }
-                            }
-                        }
-                        // 모든 선택 상태 초기화.
-                        listView.clearChoices();
-                        adapter.notifyDataSetChanged();
-
-                        delRef.setValue("null");
-                        deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
-                        deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
-                        deleteMsg.show();
-
-                        ((MainActivity)getActivity()).setFrag(0);
-
-                    }
-                    else if(flag.compareTo("false")==0){
-                        System.out.println("아무 변화 없음");
-//                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-//                    ((MainActivity)getActivity()).setFrag(0);
-                    }
-                    else{
-                        System.out.println("아무 변화 없음");
-//                    ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
 
         deleteButton = view.findViewById(R.id.basic_delete_button);
         cancelButton = view.findViewById(R.id.basic_cancel_button);
@@ -201,9 +163,9 @@ public class Frag1Delete extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MyAlertDialog.class);
-                intent.putExtra("isTagData", "false");
-                startActivity(intent);
+                Intent intent = new Intent(getActivity(), CheckDialog.class);
+                intent.putExtra("msg", "선택한 항목을 삭제하시겠습니까?");
+                startActivityForResult(intent, DELETE_CODE);
             }
         });
 
@@ -213,7 +175,7 @@ public class Frag1Delete extends Fragment {
             @Override
             public void onClick(View v) {
                 listView.clearChoices();
-                ((MainActivity)getActivity()).replaceFragment(frag1Basic.newInstance());
+                ((MainActivity)getActivity()).replaceFragment(Frag1Basic.newInstance());
             }
         });
 

@@ -193,18 +193,18 @@
     <!-- Notice -->
 
     <View
-        android:background="#66bdbdbd"
+        android:background="@color/dialogLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="10dp"/>
 
-     닫기 버튼
+<!--     닫기 버튼-->
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-5sp"
+            android:layout_marginTop="0sp"
             >
             <Button
                 android:id="@+id/cancel_button"
@@ -215,24 +215,27 @@
                 android:padding="16dp"
                 android:gravity="center"
                 android:background="#00000000"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="53dp"
-                android:layout_marginRight="30sp"
                 android:onClick="onClickCancel"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/dialogLine"/>
 
 
             <Button
                 android:id="@+id/ok_button"
                 android:text="확인"
                 android:textSize="18sp"
-                android:textColor="#497FFB"
+                android:textColor="@color/dialogTextNormal"
                 android:textStyle="bold"
                 android:padding="16dp"
                 android:gravity="center"
                 android:background="#00000000"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="53dp"
-                android:layout_marginLeft="30sp"
                 android:onClick="onClickOk"/>
         </LinearLayout>
     // 닫기 버튼

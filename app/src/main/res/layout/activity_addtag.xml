@@ -43,7 +43,7 @@
     <!-- Notice -->
 
     <View
-        android:background="#66bdbdbd"
+        android:background="@color/dialogLine"
         android:layout_width="match_parent"
         android:layout_height="1dp" />
 
@@ -62,7 +62,7 @@
             android:onClick="mOnClose"
             android:padding="16dp"
             android:text="확인"
-            android:textColor="#497FFB"
+            android:textColor="@color/dialogTextNormal"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>

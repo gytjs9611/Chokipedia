@@ -68,7 +68,7 @@
         <Button
             android:text="확인"
             android:textSize="18sp"
-            android:textColor="#497FFB"
+            android:textColor="@color/dialogTextNormal"
             android:textStyle="bold"
             android:padding="16dp"
             android:gravity="center"

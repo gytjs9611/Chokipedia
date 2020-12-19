@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,13 +33,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 public class Frag2TagData extends Fragment {
+
+    private int EDIT_DELETE_CODE = 0;
+    private int DELETE_WORD_CODE = 1;
+
     private View view;
 
-    private TextView tagDataName;
-    private EditText editText;
     private TextView totalCnt;
     public String msg;
 
@@ -46,7 +51,7 @@ public class Frag2TagData extends Fragment {
     private ChildEventListener mChild;
     // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
-    private DatabaseReference listRef, delRef;
+    private DatabaseReference listRef;
 
     private ListView listView;
     private ArrayAdapter<String> adapter; // array배열 생성, listview와 연결
@@ -57,12 +62,34 @@ public class Frag2TagData extends Fragment {
     private String click_tag_data;
     private String click_word_data;
 
-    private Button addButton, deleteButton;
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==EDIT_DELETE_CODE){
+            if(resultCode==EditDeleteDialog.RESULT_EDIT){   // 편집하기
+                // 편집 액티비티 띄우기
+            }
+            else if(resultCode==EditDeleteDialog.RESULT_DELETE){    // 삭제하기
+                Intent intent = new Intent(getActivity(), CheckDialog.class);
+                intent.putExtra("msg", "삭제하시겠습니까?");
+                startActivityForResult(intent, DELETE_WORD_CODE);
+            }
+            else if(resultCode==EditDeleteDialog.RESULT_CANCELED){  // 취소하기
+                // do nothing
+            }
+        }
+        else if(requestCode==DELETE_WORD_CODE){
+            if(resultCode==RESULT_OK){
+                listRef.child(click_word_data).removeValue();
+                adapter.notifyDataSetChanged();
 
-
-
-
+                Toast deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
+                deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                deleteMsg.show();
+            }
+        }
+    }
 
     public static Frag2TagData newInstance(String click_data){
         Frag2TagData fragment = new Frag2TagData();
@@ -78,13 +105,15 @@ public class Frag2TagData extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag2_tagdata, container, false);
 
+        listRef = firebaseDatabase.getReference("dictionary").child("word_list");
+
         click_tag_data = getArguments().getString("click_data");
         System.out.println(click_tag_data);
 
-        tagDataName = view.findViewById(R.id.tagdata_name);
+        TextView tagDataName = view.findViewById(R.id.tagdata_name);
 
         tagDataName.setText(click_tag_data);
-        editText = view.findViewById(R.id.input); // 검색어입력란
+        EditText editText = view.findViewById(R.id.input); // 검색어입력란
 
         ConstraintLayout backButton = view.findViewById(R.id.bt_back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -104,8 +133,7 @@ public class Frag2TagData extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 search_keyword = s.toString();
-                searchRef = firebaseDatabase.getReference("dictionary").child("word_list");
-                searchRef.addValueEventListener(new ValueEventListener() {
+                listRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         adapter.clear();
@@ -126,8 +154,14 @@ public class Frag2TagData extends Fragment {
                         else{ // 검색어 입력되지 않은 경우
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 String dataItem = data.getKey();
-                                Array.add(dataItem);
-                                adapter.add(dataItem);
+                                String tag1 = data.child("tag1").getValue(String.class); // getValue().toString()대신
+                                String tag2 = data.child("tag2").getValue(String.class);
+
+                                if(click_tag_data.compareTo("# "+tag1)==0 || click_tag_data.compareTo("# "+tag2)==0){
+                                    Array.add(dataItem);
+                                    adapter.add(dataItem);
+                                }
+
                             }
                         }
 
@@ -155,7 +189,7 @@ public class Frag2TagData extends Fragment {
         });
 
 
-        addButton = view.findViewById(R.id.tagdata_add_button);
+        Button addButton = view.findViewById(R.id.tagdata_add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,15 +200,12 @@ public class Frag2TagData extends Fragment {
         });
 
 
-        delRef = firebaseDatabase.getReference("dictionary").child("state").child("tagdata_delete");
-
-        deleteButton = view.findViewById(R.id.tagdata_delete_button);
+        Button deleteButton = view.findViewById(R.id.tagdata_delete_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Frag2TagDataDelete frag2TagDataDelete = new Frag2TagDataDelete();
-                delRef.setValue("null");
-                ((MainActivity)getActivity()).replaceFragment(frag2TagDataDelete.newInstance(click_tag_data, -1));
+                ((MainActivity)getActivity()).replaceFragment(frag2TagDataDelete.newInstance(click_tag_data));
             }
         });
 
@@ -185,7 +216,6 @@ public class Frag2TagData extends Fragment {
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
         listView.setAdapter(adapter);
 
-        listRef = firebaseDatabase.getReference("dictionary").child("word_list");
         listRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -246,7 +276,10 @@ public class Frag2TagData extends Fragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                click_word_data = adapter.getItem(position); // 롱 클릭한 데이터 정보 저장
 
+                Intent intent = new Intent(getActivity(), EditDeleteDialog.class);
+                startActivityForResult(intent, EDIT_DELETE_CODE);
                 return true;
             }
         });

@@ -6,4 +6,8 @@
 
     <color name="cardNormal">#FFFFFF</color>
     <color name="cardWrong">#FFB9B9</color>
+
+    <color name="dialogTextNormal">#497FFB</color>
+    <color name="dialogLine">#66bdbdbd</color>
+    <color name="EditDeleteDialogBack">#EDEDED</color>
 </resources>

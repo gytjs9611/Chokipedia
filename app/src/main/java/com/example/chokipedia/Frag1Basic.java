@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +31,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class Frag1Basic extends Fragment {
+
+    private int EDIT_DELETE_CODE = 0;
+    private int DELETE_WORD_CODE = 1;
 
     private View view;
 
@@ -41,10 +48,8 @@ public class Frag1Basic extends Fragment {
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference searchRef = firebaseDatabase.getReference();
-    private ChildEventListener mChild;
-    // 데이터베이스 값을 실시간으로 갱신하기 위해 정의
 
-    private DatabaseReference listRef, delRef;
+    private DatabaseReference listRef;
 
 
     private ListView listView;
@@ -58,18 +63,32 @@ public class Frag1Basic extends Fragment {
 
     private String click_data;
 
-    Parcelable state;
-
     @Override
-    public void onPause() {
-        super.onPause();
-        state = listView.onSaveInstanceState();
-    }
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==EDIT_DELETE_CODE){
+            if(resultCode==EditDeleteDialog.RESULT_EDIT){   // 편집하기
+                // 편집 액티비티 띄우기
+            }
+            else if(resultCode==EditDeleteDialog.RESULT_DELETE){    // 삭제하기
+                Intent intent = new Intent(getActivity(), CheckDialog.class);
+                intent.putExtra("msg", "삭제하시겠습니까?");
+                startActivityForResult(intent, DELETE_WORD_CODE);
+            }
+            else if(resultCode==EditDeleteDialog.RESULT_CANCELED){  // 취소하기
+                // do nothing
+            }
+        }
+        else if(requestCode==DELETE_WORD_CODE){
+            if(resultCode==RESULT_OK){
+                listRef.child(click_data).removeValue();
+                adapter.notifyDataSetChanged();
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
+                Toast deleteMsg = Toast.makeText(getActivity(), "성공적으로 삭제되었습니다.", Toast.LENGTH_SHORT);
+                deleteMsg.setGravity(Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 200);
+                deleteMsg.show();
+            }
+        }
     }
 
     public static Frag1Basic newInstance(){
@@ -81,6 +100,8 @@ public class Frag1Basic extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag1_basic, container, false);
         //setContentView와 유사
+
+        listRef = firebaseDatabase.getReference("dictionary").child("word_list");
 
         editText = view.findViewById(R.id.input); // 검색어입력란
 
@@ -155,7 +176,7 @@ public class Frag1Basic extends Fragment {
 
 
 
-        listRef = firebaseDatabase.getReference("dictionary").child("word_list");
+
         listRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -213,6 +234,10 @@ public class Frag1Basic extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
+                click_data = adapter.getItem(position); // 롱 클릭한 데이터 정보 저장
+
+                Intent intent = new Intent(getActivity(), EditDeleteDialog.class);
+                startActivityForResult(intent, EDIT_DELETE_CODE);
                 return true;
             }
         });
@@ -233,14 +258,10 @@ public class Frag1Basic extends Fragment {
             }
         });
 
-        delRef = firebaseDatabase.getReference("dictionary").child("state").child("delete");
-
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delRef.setValue("null");
-                ((MainActivity)getActivity()).replaceFragment(frag1Delete.newInstance(-1));
-//                ((MainActivity)getActivity()).setFrag(3);
+                ((MainActivity)getActivity()).replaceFragment(frag1Delete.newInstance());
             }
         });
 

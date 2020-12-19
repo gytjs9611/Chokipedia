@@ -12,5 +12,9 @@
         <item name="android:windowBackground">@drawable/dialog_round</item>
     </style>
 
+    <style name="EditDeletePopUp" parent = "android:Theme.Dialog">
+        <item name="android:windowBackground">@drawable/edit_delete_dialog</item>
+    </style>
+
 </resources>
 
