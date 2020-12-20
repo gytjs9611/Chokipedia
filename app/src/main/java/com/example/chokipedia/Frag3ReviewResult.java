@@ -68,7 +68,7 @@ public class Frag3ReviewResult extends Fragment {
 
         // title
         typeTitle = view.findViewById(R.id.type);
-        tagTitle = view.findViewById(R.id.tv_msg);
+        tagTitle = view.findViewById(R.id.et_input);
         // score
         scoreTextView = view.findViewById(R.id.tv_score);
 

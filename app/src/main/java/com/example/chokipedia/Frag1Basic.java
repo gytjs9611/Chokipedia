@@ -37,6 +37,7 @@ public class Frag1Basic extends Fragment {
 
     private int EDIT_DELETE_CODE = 0;
     private int DELETE_WORD_CODE = 1;
+    private int EDIT_REQUEST_CODE = 2;
 
     private View view;
 
@@ -69,6 +70,11 @@ public class Frag1Basic extends Fragment {
         if(requestCode==EDIT_DELETE_CODE){
             if(resultCode==EditDeleteDialog.RESULT_EDIT){   // 편집하기
                 // 편집 액티비티 띄우기
+                Intent intent = new Intent(getActivity(), AddWordActivity.class);
+                intent.putExtra("mode", "edit");    // edit mode
+                intent.putExtra("word", click_data);
+                intent.putExtra("tag_data", "null");
+                startActivityForResult(intent, EDIT_REQUEST_CODE);
             }
             else if(resultCode==EditDeleteDialog.RESULT_DELETE){    // 삭제하기
                 Intent intent = new Intent(getActivity(), CheckDialog.class);
@@ -89,6 +95,13 @@ public class Frag1Basic extends Fragment {
                 deleteMsg.show();
             }
         }
+        else if(requestCode==EDIT_REQUEST_CODE){    // 편집 모드
+            if(resultCode==RESULT_OK){  // 편집 완료
+
+            }
+        }
+
+
     }
 
     public static Frag1Basic newInstance(){
@@ -224,7 +237,6 @@ public class Frag1Basic extends Fragment {
                 intent.putExtra("click_data", click_data);
                 startActivity(intent);
 
-
             }
         });
 
@@ -253,6 +265,7 @@ public class Frag1Basic extends Fragment {
             public void onClick(View v) {
 //                ((MainActivity)getActivity()).replaceFragment(frag1Add.newInstance());
                 Intent intent = new Intent(getActivity(), AddWordActivity.class);
+                intent.putExtra("mode", "add"); // add mode
                 intent.putExtra("tag_data", "null");
                 startActivity(intent);
             }

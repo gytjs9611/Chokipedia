@@ -8,12 +8,12 @@
         <item name="colorAccent">#5B8DFF</item>
     </style>
 
-    <style name="AddTagPopUp" parent = "android:Theme.Dialog">
-        <item name="android:windowBackground">@drawable/dialog_round</item>
+    <style name="WhitePopUp" parent = "android:Theme.Dialog">
+        <item name="android:windowBackground">@drawable/white_dialog</item>
     </style>
 
-    <style name="EditDeletePopUp" parent = "android:Theme.Dialog">
-        <item name="android:windowBackground">@drawable/edit_delete_dialog</item>
+    <style name="LightGrayPopUp" parent = "android:Theme.Dialog">
+        <item name="android:windowBackground">@drawable/light_gray_dialog</item>
     </style>
 
 </resources>

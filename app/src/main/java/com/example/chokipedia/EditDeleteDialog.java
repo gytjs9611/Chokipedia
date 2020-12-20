@@ -24,9 +24,9 @@ import java.text.BreakIterator;
 
 public class EditDeleteDialog extends Activity {
 
-    final static int RESULT_EDIT = 0;
-    final static int RESULT_DELETE = 1;
-    final static int RESULT_CANCELED = 2;
+    final static int RESULT_EDIT = -1;
+    final static int RESULT_DELETE = -2;
+    final static int RESULT_CANCELED = -3;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

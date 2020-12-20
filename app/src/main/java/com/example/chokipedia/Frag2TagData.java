@@ -40,6 +40,7 @@ public class Frag2TagData extends Fragment {
 
     private int EDIT_DELETE_CODE = 0;
     private int DELETE_WORD_CODE = 1;
+    private int EDIT_REQUEST_CODE = 2;
 
     private View view;
 
@@ -69,6 +70,11 @@ public class Frag2TagData extends Fragment {
         if(requestCode==EDIT_DELETE_CODE){
             if(resultCode==EditDeleteDialog.RESULT_EDIT){   // 편집하기
                 // 편집 액티비티 띄우기
+                Intent intent = new Intent(getActivity(), AddWordActivity.class);
+                intent.putExtra("mode", "edit");    // edit mode
+                intent.putExtra("word", click_word_data);
+                intent.putExtra("tag_data", click_tag_data);
+                startActivityForResult(intent, EDIT_REQUEST_CODE);
             }
             else if(resultCode==EditDeleteDialog.RESULT_DELETE){    // 삭제하기
                 Intent intent = new Intent(getActivity(), CheckDialog.class);
@@ -194,6 +200,7 @@ public class Frag2TagData extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AddWordActivity.class);
+                intent.putExtra("mode", "add");
                 intent.putExtra("tag_data", click_tag_data);
                 startActivity(intent);
             }

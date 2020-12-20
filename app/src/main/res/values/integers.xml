@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="max_length_meaning">50</integer>
+    <integer name="max_length_example">50</integer>
+    <integer name="max_length_tag">10</integer>
+    <integer name="max_length_tag_with_hash">14</integer>
+
+    <integer name="max_line_meaning">3</integer>
+    <integer name="max_line_example">3</integer>
+
+
+</resources>

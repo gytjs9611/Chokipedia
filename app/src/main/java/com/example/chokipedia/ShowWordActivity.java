@@ -109,7 +109,8 @@ public class ShowWordActivity extends Activity {
             textView.setVisibility(View.GONE);
         }
         else{
-            textView.setText(append + data);
+            String appendedText = append + data;
+            textView.setText(appendedText);
         }
     }
 

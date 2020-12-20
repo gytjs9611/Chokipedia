@@ -20,6 +20,7 @@
             android:layout_height="53dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
+            android:maxLength="10"
             />
 
     </LinearLayout>
@@ -117,30 +118,31 @@
 
             <Button
                 android:id="@+id/show_tag1"
-                android:text=""
-                android:maxLength="10"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textSize="13sp"
-                android:textColor="#ffffff"
-                android:textStyle="bold"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="7dp"
-                android:gravity="center"
-                android:background="@drawable/tag_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onClickTag1"/>
+                android:background="@drawable/tag_button1"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxWidth="127.5dp"
+                android:maxLines="1"
+                android:onClick="onClickTag1"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="7dp"
+                android:text=""
+                android:textColor="#ffffff"
+                android:textSize="13dp"
+                android:textStyle="bold" />
+
             <Button
                 android:id="@+id/show_tag2"
                 android:text=""
-                android:maxLength="10"
+                android:maxWidth="127.5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textSize="13sp"
+                android:textSize="13dp"
                 android:textColor="#ffffff"
                 android:textStyle="bold"
-                android:paddingHorizontal="10dp"
+                android:paddingHorizontal="5dp"
                 android:paddingVertical="7dp"
                 android:gravity="center"
                 android:background="@drawable/tag_button2"

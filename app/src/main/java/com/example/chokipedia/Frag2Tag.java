@@ -71,6 +71,10 @@ public class Frag2Tag extends Fragment {
         if(requestCode==EDIT_DELETE_CODE){  // 롱클릭
             if(resultCode==EditDeleteDialog.RESULT_EDIT){
                 // 편집 액티비티 띄우기
+                Intent intent = new Intent(getActivity(), AddTagActivity.class);
+                intent.putExtra("tag", click_data);
+                intent.putExtra("mode", "edit");
+                startActivity(intent);
             }
             else if(resultCode==EditDeleteDialog.RESULT_DELETE){
                 Intent intent = new Intent(getActivity(), CheckDialog.class);
@@ -86,9 +90,7 @@ public class Frag2Tag extends Fragment {
 
             if(resultCode==RESULT_OK){
                 // 태그 정보 모두 삭제
-                click_data = click_data.substring(2);
                 listRef.child(click_data).removeValue(); // tag 목록에서 삭제
-                Log.d("TAG_DELETE_CHECK", "click data = "+click_data);
 
                 // 태그 목록에서 삭제한 태그 정보 tag1, tag2에 있으면 지워줌
                 dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -135,6 +137,33 @@ public class Frag2Tag extends Fragment {
         view = inflater.inflate(R.layout.frag2_tag, container, false);
         listRef = firebaseDatabase.getReference("dictionary").child("tag_list");
         dataRef = firebaseDatabase.getReference("dictionary").child("word_list");
+
+        // 태그 복구용
+       /* dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    String tag1 = data.child("tag1").getValue(String.class);
+                    String tag2 = data.child("tag2").getValue(String.class);
+
+                    if(!tag1.equals("")){
+                        listRef.child(tag1).setValue(0);
+                    }
+                    if(!tag2.equals("")){
+                        listRef.child(tag2).setValue(0);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
+
+
 
         editText = view.findViewById(R.id.input); // 검색어입력란
 
@@ -235,7 +264,7 @@ public class Frag2Tag extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                click_data = adapter.getItem(position).toString();
+                click_data = adapter.getItem(position);
                 ((MainActivity)getActivity()).replaceFragment(frag2TagData.newInstance(click_data));
             }
         });
@@ -248,6 +277,7 @@ public class Frag2Tag extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 click_data = adapter.getItem(position);
+                click_data = click_data.substring(2);
                 Intent intent = new Intent(getActivity(), EditDeleteDialog.class);
                 startActivityForResult(intent, EDIT_DELETE_CODE);
                 return true;
@@ -261,6 +291,8 @@ public class Frag2Tag extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AddTagActivity.class);
+                intent.putExtra("tag", "");
+                intent.putExtra("mode", "add");
                 startActivity(intent);
             }
         });

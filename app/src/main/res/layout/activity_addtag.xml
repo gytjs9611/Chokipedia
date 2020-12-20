@@ -9,31 +9,33 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
-            android:text="새로운 태그 추가"
-            android:textSize="20sp"
-            android:textColor="#000000"
-            android:gravity="center"
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
-            android:layout_height="53dp"
-            />
+            android:layout_height="50dp"
+            android:gravity="bottom|center_horizontal"
+            android:text="새로운 태그 추가"
+            android:textColor="#000000"
+            android:textSize="20sp" />
     </LinearLayout>
     <!-- //end 타이틀바 -->
 
     <!-- Notice -->
     <LinearLayout
-        android:padding="24dp"
+        android:padding="30dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/tv_msg"
+            android:id="@+id/et_input"
             android:textSize="15sp"
             android:textColor="#000"
-            android:background="#FFFFFF"
+            android:background="@android:color/transparent"
             android:gravity="center"
-            android:maxLength="9"
+            android:maxLength="@integer/max_length_tag"
+            android:maxLines="1"
             android:layout_marginBottom="3dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,9 +64,9 @@
             android:onClick="mOnClose"
             android:padding="16dp"
             android:text="확인"
+            android:includeFontPadding="false"
             android:textColor="@color/dialogTextNormal"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
     </LinearLayout>
     <!--// 닫기 버튼 -->
 </LinearLayout>

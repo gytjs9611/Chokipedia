@@ -13,13 +13,13 @@
         android:layout_marginBottom="10dp">
 
         <TextView
-            android:id="@+id/show_title"
+            android:id="@+id/tv_title"
             android:text="단어추가 : "
             android:textSize="25sp"
             android:textColor="#000000"
             android:gravity="center_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="53sp"
+            android:layout_height="53dp"
             android:layout_marginLeft="20dp"
             />
         <EditText
@@ -30,9 +30,10 @@
             android:background="@drawable/rounded_edittext"
             android:textColor="#000000"
             android:gravity="center_vertical"
-            android:layout_width="140sp"
-            android:layout_height="45sp"
+            android:layout_width="140dp"
+            android:layout_height="45dp"
             android:padding="10dp"
+            android:maxLength="10"
             />
 
     </LinearLayout>
@@ -70,8 +71,8 @@
             android:textSize="16sp"
             android:background="@drawable/rounded_edittext"
             android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:maxLength="45"
+            android:maxLines="@integer/max_line_meaning"
+            android:maxLength="@integer/max_length_meaning"
             android:textColor="#000000"
             android:gravity="top"
             android:layout_width="match_parent"
@@ -85,8 +86,8 @@
             android:textSize="16sp"
             android:background="@drawable/rounded_edittext"
             android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:maxLength="45"
+            android:maxLines="@integer/max_line_meaning"
+            android:maxLength="@integer/max_length_meaning"
             android:textColor="#000000"
             android:gravity="top"
             android:layout_width="match_parent"
@@ -117,8 +118,8 @@
             android:gravity="top"
             android:hint="예1"
             android:inputType="textMultiLine"
-            android:maxLength="45"
-            android:maxLines="3"
+            android:maxLength="@integer/max_length_example"
+            android:maxLines="@integer/max_line_meaning"
             android:padding="10dp"
             android:textColor="#000000"
             android:textSize="15sp" />
@@ -129,8 +130,8 @@
             android:textSize="15sp"
             android:background="@drawable/rounded_edittext"
             android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:maxLength="45"
+            android:maxLines="@integer/max_line_example"
+            android:maxLength="@integer/max_length_example"
             android:textColor="#000000"
             android:gravity="top"
             android:layout_width="match_parent"
@@ -163,7 +164,7 @@
                 android:textSize="15sp"
                 android:background="@drawable/rounded_edittext"
                 android:textColor="#000000"
-                android:maxLength="9"
+                android:maxLength="@integer/max_length_tag"
                 android:gravity="center_vertical"
                 android:layout_height="45sp"
                 android:layout_width="match_parent"
@@ -176,7 +177,7 @@
                 android:textSize="15sp"
                 android:background="@drawable/rounded_edittext"
                 android:textColor="#000000"
-                android:maxLength="9"
+                android:maxLength="@integer/max_length_tag"
                 android:gravity="center_vertical"
                 android:layout_height="45sp"
                 android:layout_width="match_parent"
@@ -217,6 +218,7 @@
                 android:background="#00000000"
                 android:layout_width="150dp"
                 android:layout_height="53dp"
+                android:includeFontPadding="false"
                 android:onClick="onClickCancel"/>
 
             <View
@@ -236,6 +238,7 @@
                 android:background="#00000000"
                 android:layout_width="150dp"
                 android:layout_height="53dp"
+                android:includeFontPadding="false"
                 android:onClick="onClickOk"/>
         </LinearLayout>
     // 닫기 버튼

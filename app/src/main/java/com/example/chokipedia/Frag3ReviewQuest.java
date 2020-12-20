@@ -106,7 +106,7 @@ public class Frag3ReviewQuest extends Fragment {
 
         type = getArguments().getString("type");
         typeTitle = view.findViewById(R.id.type);
-        tagTitle = view.findViewById(R.id.tv_msg);
+        tagTitle = view.findViewById(R.id.et_input);
 
         if(type.equals("일반")){  // 일반 복습
             typeTitle.setVisibility(View.VISIBLE);
