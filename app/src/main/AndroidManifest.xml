@@ -9,9 +9,8 @@
         android:roundIcon="@mipmap/ic_chokipedia3_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="adjustNothing">
+
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +18,12 @@
             </intent-filter>
         </activity>
 
-<!--        Popup Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustNothing"/>
+
+        <!--        Popup Activity -->
+
         <activity
             android:name=".AddTagActivity"
             android:theme="@style/WhitePopUp"/>

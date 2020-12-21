@@ -36,7 +36,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class Frag1Delete extends Fragment {
+public class Frag1Delete extends Fragment{
 
     private int DELETE_CODE = 0;
 
@@ -186,5 +186,10 @@ public class Frag1Delete extends Fragment {
     }
     // ctrl+O, 검색하면 됨
     // fragment는 onCreateView로 생성하면 됨
+
+
+
+
+
 
 }
