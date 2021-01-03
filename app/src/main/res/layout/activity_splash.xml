@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dialogTextNormal"
+    android:background="@color/splashBackground"
     tools:context=".SplashActivity"
     >
 
@@ -20,15 +20,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/iv_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_splash_subtitle"
-        android:layout_marginTop="5dp"
+    <TextView
+        android:id="@+id/some_id"
+        android:layout_width="313dp"
+        android:layout_height="27dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/splash_title"
+        android:textAppearance="@style/SplashTitle"
         app:layout_constraintEnd_toEndOf="@+id/iv_title"
         app:layout_constraintStart_toStartOf="@+id/iv_title"
         app:layout_constraintTop_toBottomOf="@+id/iv_title" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
